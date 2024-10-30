@@ -20,3 +20,17 @@ const TangemSdkCodoraReactNative = NativeModules.TangemSdkCodoraReactNative
 export function scan(cardId?: string, accessCode?: string): Promise<string> {
   return TangemSdkCodoraReactNative.scan(cardId, accessCode);
 }
+
+export function sign(
+  unsignedHex: string,
+  pubKeyBase58: string,
+  cardId?: string,
+  accessCode?: string
+): Promise<string> {
+  return TangemSdkCodoraReactNative.sign(
+    unsignedHex,
+    pubKeyBase58,
+    cardId,
+    accessCode
+  );
+}
