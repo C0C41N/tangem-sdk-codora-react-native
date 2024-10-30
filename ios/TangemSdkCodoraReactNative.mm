@@ -7,8 +7,17 @@
 RCT_EXTERN_METHOD(
   scan:(NSString * _Nullable)cardId
   accessCode:(NSString * _Nullable)accessCode
-  resolver:(RCTPromiseResolveBlock)resolve
-  rejecter:(RCTPromiseRejectBlock)reject
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  sign:(NSString *)unsignedHex
+  pubKeyBase58:(NSString *)pubKeyBase58
+  cardId:(NSString * _Nullable)cardId
+  accessCode:(NSString * _Nullable)accessCode
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
 )
 
 @end
