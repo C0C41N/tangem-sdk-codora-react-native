@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'tangem-sdk-codora-react-native';
+import { scan } from 'tangem-sdk-codora-react-native';
 
 export default function App() {
-  const [result, setResult] = useState<number | undefined>();
+  const [result, setResult] = useState<string | undefined>();
 
   useEffect(() => {
-    multiply(3, 7).then(setResult);
+    scan().then(setResult);
   }, []);
 
   return (

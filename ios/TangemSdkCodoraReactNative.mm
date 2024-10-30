@@ -2,13 +2,13 @@
 
 @interface RCT_EXTERN_MODULE(TangemSdkCodoraReactNative, NSObject)
 
-RCT_EXTERN_METHOD(multiply:(float)a withB:(float)b
-                 withResolver:(RCTPromiseResolveBlock)resolve
-                 withRejecter:(RCTPromiseRejectBlock)reject)
++ (BOOL)requiresMainQueueSetup { return NO; }
 
-+ (BOOL)requiresMainQueueSetup
-{
-  return NO;
-}
+RCT_EXTERN_METHOD(
+  scan:(NSString * _Nullable)cardId
+  accessCode:(NSString * _Nullable)accessCode
+  resolver:(RCTPromiseResolveBlock)resolve
+  rejecter:(RCTPromiseRejectBlock)reject
+)
 
 @end

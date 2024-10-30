@@ -17,6 +17,6 @@ const TangemSdkCodoraReactNative = NativeModules.TangemSdkCodoraReactNative
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return TangemSdkCodoraReactNative.multiply(a, b);
+export function scan(cardId?: string, accessCode?: string): Promise<string> {
+  return TangemSdkCodoraReactNative.scan(cardId, accessCode);
 }
