@@ -3,6 +3,7 @@ import type { Card, CreateAllWalletsResult, IScanResult, PurgeAllWalletsResult }
 
 export async function scan(accessCode?: string, cardId?: string): Promise<Card> {
   const scanResponse: IScanResult = await TangemSdkCodoraReactNative.scan(accessCode, cardId);
+  console.log('scanResponse', scanResponse);
   const card = JSON.parse(scanResponse.card) as Card;
   card.wallets.map((w, i) => ({ ...w, publicKeyBase58: scanResponse.publicKeysBase58[i] }));
   return card;
