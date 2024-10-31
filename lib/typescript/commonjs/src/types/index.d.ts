@@ -1,3 +1,4 @@
+export * from './card';
 interface IPurgeWalletResult {
     curve: string;
     publicKey: string;
@@ -8,5 +9,4 @@ interface ICreateWalletResult {
     publicKey: string;
 }
 export type CreateAllWalletsResult = ICreateWalletResult[];
-export {};
-//# sourceMappingURL=types.d.ts.map
+//# sourceMappingURL=index.d.ts.map

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { scan } from 'tangem-sdk-codora-react-native';
+// import { scan } from 'tangem-sdk-codora-react-native';
 
 export default function App() {
-  const [result, setResult] = useState<string | undefined>();
+  const [result] = useState<string | undefined>();
 
   useEffect(() => {
-    scan().then(setResult);
+    //
   }, []);
 
   return (
