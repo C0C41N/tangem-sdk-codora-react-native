@@ -10,12 +10,10 @@ export function sign(unsignedHex: string, pubKeyBase58: string, accessCode?: str
   return TangemSdkCodoraReactNative.sign(unsignedHex, pubKeyBase58, accessCode, cardId);
 }
 
-export async function createAllWallets(accessCode?: string, cardId?: string): Promise<CreateAllWalletsResult> {
-  const result = await TangemSdkCodoraReactNative.createAllWallets(accessCode, cardId);
-  return JSON.parse(result) as CreateAllWalletsResult;
+export function purgeAllWallets(accessCode?: string, cardId?: string): Promise<PurgeAllWalletsResult> {
+  return TangemSdkCodoraReactNative.purgeAllWallets(accessCode, cardId);
 }
 
-export async function purgeAllWallets(accessCode?: string, cardId?: string): Promise<PurgeAllWalletsResult> {
-  const result = await TangemSdkCodoraReactNative.purgeAllWallets(accessCode, cardId);
-  return JSON.parse(result) as PurgeAllWalletsResult;
+export function createAllWallets(accessCode?: string, cardId?: string): Promise<CreateAllWalletsResult> {
+  return TangemSdkCodoraReactNative.createAllWallets(accessCode, cardId);
 }
