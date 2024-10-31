@@ -71,6 +71,7 @@ export interface Wallet {
   isImported: boolean;
   chainCode?: string;
   publicKey: string;
+  publicKeyBase58: string;
   derivedKeys: DerivedKeys;
   totalSignedHashes: number;
   settings: WalletSettings;

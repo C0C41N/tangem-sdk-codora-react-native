@@ -34,7 +34,11 @@ class TangemSdkCodoraReactNative: NSObject {
     }
 
     session.stop()
-    resolve(card.json)
+    
+    resolve([
+      "card": card.json,
+      "publicKeysBase58": card.wallets.map { $0.publicKey.base58EncodedString }
+    ])
 
   } }
   

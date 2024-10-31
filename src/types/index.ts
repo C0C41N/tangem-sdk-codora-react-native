@@ -1,5 +1,10 @@
 export * from './card';
 
+export interface IScanResult {
+  card: string;
+  publicKeysBase58: string[];
+}
+
 interface IPurgeWalletResult {
   curve: string;
   publicKey: string;
