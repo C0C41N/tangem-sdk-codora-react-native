@@ -2,13 +2,9 @@ import { TangemSdkCodoraReactNative } from './nativeModule';
 import type { Card, CreateAllWalletsResult, IScanResult, PurgeAllWalletsResult } from './types';
 
 export async function scan(accessCode?: string, cardId?: string): Promise<Card> {
-  const scanResponse: IScanResult = await TangemSdkCodoraReactNative.scan(accessCode, cardId);
-  const card = JSON.parse(scanResponse.card) as Card;
-
-  card.wallets.forEach((w, i) => {
-    w.publicKeyBase58 = scanResponse.publicKeysBase58[i] as string;
-  });
-
+  const { card: cardJson, publicKeysBase58 } = (await TangemSdkCodoraReactNative.scan(accessCode, cardId)) as IScanResult;
+  const card = JSON.parse(cardJson) as Card;
+  card.wallets.forEach((w, i) => (w.publicKeyBase58 = publicKeysBase58[i]!));
   return card;
 }
 
