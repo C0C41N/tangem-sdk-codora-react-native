@@ -5,8 +5,8 @@
 + (BOOL)requiresMainQueueSetup { return NO; }
 
 RCT_EXTERN_METHOD(
-  scan:(NSString * _Nullable)cardId
-  accessCode:(NSString * _Nullable)accessCode
+  scan:(NSString * _Nullable)accessCode
+  cardId:(NSString * _Nullable)cardId
   resolve:(RCTPromiseResolveBlock)resolve
   reject:(RCTPromiseRejectBlock)reject
 )
@@ -14,8 +14,22 @@ RCT_EXTERN_METHOD(
 RCT_EXTERN_METHOD(
   sign:(NSString *)unsignedHex
   pubKeyBase58:(NSString *)pubKeyBase58
-  cardId:(NSString * _Nullable)cardId
   accessCode:(NSString * _Nullable)accessCode
+  cardId:(NSString * _Nullable)cardId
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  purgeAllWallets:(NSString * _Nullable)accessCode
+  cardId:(NSString * _Nullable)cardId
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  createAllWallets:(NSString * _Nullable)accessCode
+  cardId:(NSString * _Nullable)cardId
   resolve:(RCTPromiseResolveBlock)resolve
   reject:(RCTPromiseRejectBlock)reject
 )
