@@ -5,7 +5,6 @@ import Foundation
 class TangemSdkCodoraReactNative: NSObject {
 
   let errorCode = "TANGEM_SDK_CODORA_ERROR"
-  let errorObj = NSError(domain: "TangemSdkCodoraReactNative", code: 0, userInfo: nil)
 
   let sdk = TangemProvider.getTangemSdk()
 
@@ -20,7 +19,7 @@ class TangemSdkCodoraReactNative: NSObject {
     let startSessionResult = await sdk.startSessionAsync(cardId: cardId, accessCode: accessCode)
 
     guard startSessionResult.success, let session = startSessionResult.value else {
-      reject(errorCode, "Start Session failed: \(startSessionResult.error!)", errorObj)
+      reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
       return
     }
 
@@ -28,7 +27,7 @@ class TangemSdkCodoraReactNative: NSObject {
     let scanResult = await scan.runAsync(in: session)
 
     guard scanResult.success, let card = scanResult.value else {
-      reject(errorCode, "ScanTask failed: \(scanResult.error!)", errorObj)
+      reject(errorCode, "ScanTask failed: \(scanResult.error!)", nil)
       session.stop()
       return
     }
@@ -55,7 +54,7 @@ class TangemSdkCodoraReactNative: NSObject {
     let startSessionResult = await sdk.startSessionAsync(cardId: cardId, accessCode: accessCode)
     
     guard startSessionResult.success, let session = startSessionResult.value else {
-      reject(errorCode, "Start Session failed: \(startSessionResult.error!)", errorObj)
+      reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
       return
     }
     
@@ -66,7 +65,7 @@ class TangemSdkCodoraReactNative: NSObject {
     let signResult = await sign.runAsync(in: session)
     
     guard signResult.success, let response = signResult.value else {
-      reject(errorCode, "SignCommand failed: \(signResult.error!)", errorObj)
+      reject(errorCode, "SignCommand failed: \(signResult.error!)", nil)
       session.stop()
       return
     }
@@ -87,7 +86,7 @@ class TangemSdkCodoraReactNative: NSObject {
     let startSessionResult = await sdk.startSessionAsync(cardId: cardId, accessCode: accessCode)
     
     guard startSessionResult.success, let session = startSessionResult.value else {
-      reject(errorCode, "Start Session failed: \(startSessionResult.error!)", errorObj)
+      reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
       return
     }
     
@@ -95,7 +94,7 @@ class TangemSdkCodoraReactNative: NSObject {
     let scanResult = await scan.runAsync(in: session)
     
     guard scanResult.success, let card = scanResult.value else {
-      reject(errorCode, "ScanTask failed: \(scanResult.error!)", errorObj)
+      reject(errorCode, "ScanTask failed: \(scanResult.error!)", nil)
       session.stop()
       return
     }
@@ -134,7 +133,7 @@ class TangemSdkCodoraReactNative: NSObject {
     let startSessionResult = await sdk.startSessionAsync(cardId: cardId, accessCode: accessCode)
 
     guard startSessionResult.success, let session = startSessionResult.value else {
-      reject(errorCode, "Start Session failed: \(startSessionResult.error!)", errorObj)
+      reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
       return
     }
 
@@ -147,7 +146,7 @@ class TangemSdkCodoraReactNative: NSObject {
       let createWalletResult = await createWallet.runAsync(in: session)
 
       guard createWalletResult.success, let response = createWalletResult.value else {
-        reject(errorCode, "CreateWalletTask failed: \(createWalletResult.error!)", errorObj)
+        reject(errorCode, "CreateWalletTask failed: \(createWalletResult.error!)", nil)
         session.stop()
         return
       }
