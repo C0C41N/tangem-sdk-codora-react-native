@@ -1,11 +1,13 @@
-// Scan Card
-
-export interface IScanParams {
+interface ISessionParams {
   accessCode?: string;
   cardId?: string;
   msgHeader?: string;
   msgBody?: string;
 }
+
+// Scan Card
+
+export interface IScanParams extends ISessionParams {}
 
 export interface IScanResult {
   card: string;
@@ -14,23 +16,14 @@ export interface IScanResult {
 
 // Sign Hex
 
-export interface ISignParams {
+export interface ISignParams extends ISessionParams {
   unsignedHex: string;
   pubKeyBase58: string;
-  accessCode?: string;
-  cardId?: string;
-  msgHeader?: string;
-  msgBody?: string;
 }
 
 // Purge All Wallets
 
-export interface IPurgeAllWalletsParams {
-  accessCode?: string;
-  cardId?: string;
-  msgHeader?: string;
-  msgBody?: string;
-}
+export interface IPurgeAllWalletsParams extends ISessionParams {}
 
 interface IPurgeWalletResult {
   curve: string;
@@ -41,12 +34,7 @@ export type PurgeAllWalletsResult = IPurgeWalletResult[];
 
 // Create All Wallets
 
-export interface ICreateAllWalletsParams {
-  accessCode?: string;
-  cardId?: string;
-  msgHeader?: string;
-  msgBody?: string;
-}
+export interface ICreateAllWalletsParams extends ISessionParams {}
 
 interface ICreateWalletResult {
   curve: string;
