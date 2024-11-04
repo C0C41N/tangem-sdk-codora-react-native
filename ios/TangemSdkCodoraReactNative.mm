@@ -42,4 +42,14 @@ RCT_EXTERN_METHOD(
   reject:(RCTPromiseRejectBlock)reject
 )
 
+RCT_EXTERN_METHOD(
+  setAccessCode:(NSString *)newAccessCode
+  currentAccessCode:(NSString * _Nullable)currentAccessCode
+  cardId:(NSString * _Nullable)cardId
+  msgHeader:(NSString * _Nullable)msgHeader
+  msgBody:(NSString * _Nullable)msgBody
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
 @end

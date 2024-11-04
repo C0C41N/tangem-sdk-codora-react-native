@@ -6,6 +6,7 @@ import type {
   IPurgeAllWalletsParams,
   IScanParams,
   IScanResult,
+  ISetAccessCodeParams,
   ISignParams,
   PurgeAllWalletsResult,
 } from './types';
@@ -40,4 +41,9 @@ export function purgeAllWallets(params: IPurgeAllWalletsParams): Promise<PurgeAl
 export function createAllWallets(params: ICreateAllWalletsParams): Promise<CreateAllWalletsResult> {
   const { accessCode, cardId, msgBody, msgHeader } = params;
   return TangemSdkCodoraReactNative.createAllWallets(accessCode, cardId, msgHeader, msgBody);
+}
+
+export function setAccessCode(params: ISetAccessCodeParams): Promise<void> {
+  const { newAccessCode, accessCode, cardId, msgBody, msgHeader } = params;
+  return TangemSdkCodoraReactNative.setAccessCode(newAccessCode, accessCode, cardId, msgHeader, msgBody);
 }

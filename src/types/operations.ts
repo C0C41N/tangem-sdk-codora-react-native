@@ -42,3 +42,9 @@ interface ICreateWalletResult {
 }
 
 export type CreateAllWalletsResult = ICreateWalletResult[];
+
+// Set Access Code
+
+export interface ISetAccessCodeParams extends ISessionParams {
+  newAccessCode: string;
+}

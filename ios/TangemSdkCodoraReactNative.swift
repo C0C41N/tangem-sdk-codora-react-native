@@ -190,4 +190,40 @@ class TangemSdkCodoraReactNative: NSObject {
 
   } }
 
+  @objc(setAccessCode:currentAccessCode:cardId:msgHeader:msgBody:resolve:reject:)
+  public func setAccessCode(
+    newAccessCode: String,
+    currentAccessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) { Task {
+
+    let startSessionResult = await sdk.startSessionAsync(
+      cardId: cardId,
+      accessCode: currentAccessCode,
+      msgHeader: msgHeader,
+      msgBody: msgBody
+    )
+
+    guard startSessionResult.success, let session = startSessionResult.value else {
+      print("Start Session failed: \(startSessionResult.error!)")
+      return
+    }
+
+    let setAccessCode = SetUserCodeCommand(accessCode: newAccessCode)
+    let setAccessCodeResult = await setAccessCode.runAsync(in: session)
+
+    guard setAccessCodeResult.success else {
+      print("SetUserCodeCommand failed: \(setAccessCodeResult.error!)")
+      session.stop()
+      return
+    }
+
+    session.stop()
+
+  } }
+
 }
