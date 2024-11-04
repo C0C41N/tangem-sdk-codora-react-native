@@ -33,14 +33,14 @@ class TangemSdkCodoraReactNative: NSObject {
     }
 
     session.stop()
-    
+
     resolve([
       "card": card.json,
       "publicKeysBase58": card.wallets.map { $0.publicKey.base58EncodedString }
     ])
 
   } }
-  
+
   @objc(sign:pubKeyBase58:accessCode:cardId:resolve:reject:)
   public func sign(
     unsignedHex: String,
@@ -52,29 +52,29 @@ class TangemSdkCodoraReactNative: NSObject {
   ) { Task {
 
     let startSessionResult = await sdk.startSessionAsync(cardId: cardId, accessCode: accessCode)
-    
+
     guard startSessionResult.success, let session = startSessionResult.value else {
       reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
       return
     }
-    
+
     let pubKeyData = pubKeyBase58.base58DecodedData
     let hashData = Data(hexString: unsignedHex)
-    
+
     let sign = SignCommand(hashes: [hashData], walletPublicKey: pubKeyData)
     let signResult = await sign.runAsync(in: session)
-    
+
     guard signResult.success, let response = signResult.value else {
       reject(errorCode, "SignCommand failed: \(signResult.error!)", nil)
       session.stop()
       return
     }
-    
+
     session.stop()
     resolve(response.signatures[0].hexString)
 
   } }
-  
+
   @objc(purgeAllWallets:cardId:resolve:reject:)
   func purgeAllWallets(
     accessCode: String?,
@@ -82,29 +82,29 @@ class TangemSdkCodoraReactNative: NSObject {
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
-    
+
     let startSessionResult = await sdk.startSessionAsync(cardId: cardId, accessCode: accessCode)
-    
+
     guard startSessionResult.success, let session = startSessionResult.value else {
       reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
       return
     }
-    
+
     let scan = ScanTask()
     let scanResult = await scan.runAsync(in: session)
-    
+
     guard scanResult.success, let card = scanResult.value else {
       reject(errorCode, "ScanTask failed: \(scanResult.error!)", nil)
       session.stop()
       return
     }
-    
+
     var purgedWallets: [[String: Any]] = []
-    
+
     for wallet in card.wallets {
       let purge = PurgeWalletCommand(publicKey: wallet.publicKey)
       let purgeResult = await purge.runAsync(in: session)
-      
+
       guard purgeResult.success else {
         print("PurgeWalletCommand failed: \(purgeResult.error!)")
         session.stop()
@@ -116,10 +116,10 @@ class TangemSdkCodoraReactNative: NSObject {
         "publicKey": wallet.publicKey.base58EncodedString
       ])
     }
-    
+
     session.stop()
     resolve(purgedWallets)
-    
+
   } }
 
   @objc(createAllWallets:cardId:resolve:reject:)
@@ -138,7 +138,7 @@ class TangemSdkCodoraReactNative: NSObject {
     }
 
     let curves: [EllipticCurve] = [.secp256k1, .ed25519, .bls12381_G2_AUG, .bip0340, .ed25519_slip0010]
-    
+
     var createdWallets: [[String: Any]] = []
 
     for curve in curves {
@@ -150,7 +150,7 @@ class TangemSdkCodoraReactNative: NSObject {
         session.stop()
         return
       }
-      
+
       createdWallets.append([
         "curve": curve.rawValue,
         "publicKey": response.wallet.publicKey.base58EncodedString
