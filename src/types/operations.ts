@@ -48,3 +48,7 @@ export type CreateAllWalletsResult = ICreateWalletResult[];
 export interface ISetAccessCodeParams extends ISessionParams {
   newAccessCode: string;
 }
+
+// Reset Backup
+
+export interface IResetBackupParams extends ISessionParams {}

@@ -209,7 +209,7 @@ class TangemSdkCodoraReactNative: NSObject {
     )
 
     guard startSessionResult.success, let session = startSessionResult.value else {
-      print("Start Session failed: \(startSessionResult.error!)")
+      reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
       return
     }
 
@@ -217,13 +217,58 @@ class TangemSdkCodoraReactNative: NSObject {
     let setAccessCodeResult = await setAccessCode.runAsync(in: session)
 
     guard setAccessCodeResult.success else {
-      print("SetUserCodeCommand failed: \(setAccessCodeResult.error!)")
+      reject(errorCode, "SetUserCodeCommand failed: \(setAccessCodeResult.error!)", nil)
       session.stop()
       return
     }
 
+    resolve(nil)
     session.stop()
 
   } }
+
+  @objc(resetBackup:cardId:msgHeader:msgBody:resolve:reject:)
+  public func resetBackup(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) { Task {
+
+    let startSessionResult = await sdk.startSessionAsync(
+      cardId: cardId,
+      accessCode: accessCode,
+      msgHeader: msgHeader,
+      msgBody: msgBody
+    )
+
+    guard startSessionResult.success, let session = startSessionResult.value else {
+      reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
+      return
+    }
+
+    let resetBackup = ResetBackupCommand()
+    let resetBackupResult = await resetBackup.runAsync(in: session)
+
+    guard resetBackupResult.success else {
+      reject(errorCode, "ResetBackupCommand failed: \(resetBackupResult.error!)", nil)
+      session.stop()
+      return
+    }
+
+    resolve(nil)
+    session.stop()
+
+  } }
+
+//  let resetCodesResult = await SetUserCodeCommand.resetUserCodes.runAsync(in: session)
+//
+//  guard resetCodesResult.success else {
+//    print("SetUserCodeCommand.resetUserCodes failed: \(resetCodesResult.error!)")
+//    session.stop()
+//    return
+//  }
 
 }

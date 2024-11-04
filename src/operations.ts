@@ -4,6 +4,7 @@ import type {
   CreateAllWalletsResult,
   ICreateAllWalletsParams,
   IPurgeAllWalletsParams,
+  IResetBackupParams,
   IScanParams,
   IScanResult,
   ISetAccessCodeParams,
@@ -46,4 +47,9 @@ export function createAllWallets(params: ICreateAllWalletsParams): Promise<Creat
 export function setAccessCode(params: ISetAccessCodeParams): Promise<void> {
   const { newAccessCode, accessCode, cardId, msgBody, msgHeader } = params;
   return TangemSdkCodoraReactNative.setAccessCode(newAccessCode, accessCode, cardId, msgHeader, msgBody);
+}
+
+export function resetBackup(params: IResetBackupParams): Promise<void> {
+  const { accessCode, cardId, msgBody, msgHeader } = params;
+  return TangemSdkCodoraReactNative.resetBackup(accessCode, cardId, msgHeader, msgBody);
 }
