@@ -263,12 +263,39 @@ class TangemSdkCodoraReactNative: NSObject {
 
   } }
 
-//  let resetCodesResult = await SetUserCodeCommand.resetUserCodes.runAsync(in: session)
-//
-//  guard resetCodesResult.success else {
-//    print("SetUserCodeCommand.resetUserCodes failed: \(resetCodesResult.error!)")
-//    session.stop()
-//    return
-//  }
+  @objc(resetCodes:cardId:msgHeader:msgBody:resolve:reject:)
+  public func resetCodes(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) { Task {
+
+    let startSessionResult = await sdk.startSessionAsync(
+      cardId: cardId,
+      accessCode: accessCode,
+      msgHeader: msgHeader,
+      msgBody: msgBody
+    )
+
+    guard startSessionResult.success, let session = startSessionResult.value else {
+      reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
+      return
+    }
+
+    let resetCodesResult = await SetUserCodeCommand.resetUserCodes.runAsync(in: session)
+
+    guard resetCodesResult.success else {
+      print("SetUserCodeCommand.resetUserCodes failed: \(resetCodesResult.error!)")
+      session.stop()
+      return
+    }
+
+    resolve(nil)
+    session.stop()
+
+  } }
 
 }

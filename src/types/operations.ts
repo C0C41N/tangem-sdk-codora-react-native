@@ -52,3 +52,7 @@ export interface ISetAccessCodeParams extends ISessionParams {
 // Reset Backup
 
 export interface IResetBackupParams extends ISessionParams {}
+
+// Reset Codes
+
+export interface IResetCodesParams extends ISessionParams {}

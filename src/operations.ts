@@ -5,6 +5,7 @@ import type {
   ICreateAllWalletsParams,
   IPurgeAllWalletsParams,
   IResetBackupParams,
+  IResetCodesParams,
   IScanParams,
   IScanResult,
   ISetAccessCodeParams,
@@ -52,4 +53,9 @@ export function setAccessCode(params: ISetAccessCodeParams): Promise<void> {
 export function resetBackup(params: IResetBackupParams): Promise<void> {
   const { accessCode, cardId, msgBody, msgHeader } = params;
   return TangemSdkCodoraReactNative.resetBackup(accessCode, cardId, msgHeader, msgBody);
+}
+
+export function resetCodes(params: IResetCodesParams): Promise<void> {
+  const { accessCode, cardId, msgBody, msgHeader } = params;
+  return TangemSdkCodoraReactNative.resetCodes(accessCode, cardId, msgHeader, msgBody);
 }
