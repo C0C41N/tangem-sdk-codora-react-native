@@ -7,6 +7,8 @@
 RCT_EXTERN_METHOD(
   scan:(NSString * _Nullable)accessCode
   cardId:(NSString * _Nullable)cardId
+  msgHeader:(NSString * _Nullable)msgHeader
+  msgBody:(NSString * _Nullable)msgBody
   resolve:(RCTPromiseResolveBlock)resolve
   reject:(RCTPromiseRejectBlock)reject
 )
@@ -16,6 +18,8 @@ RCT_EXTERN_METHOD(
   pubKeyBase58:(NSString *)pubKeyBase58
   accessCode:(NSString * _Nullable)accessCode
   cardId:(NSString * _Nullable)cardId
+  msgHeader:(NSString * _Nullable)msgHeader
+  msgBody:(NSString * _Nullable)msgBody
   resolve:(RCTPromiseResolveBlock)resolve
   reject:(RCTPromiseRejectBlock)reject
 )
@@ -23,6 +27,8 @@ RCT_EXTERN_METHOD(
 RCT_EXTERN_METHOD(
   purgeAllWallets:(NSString * _Nullable)accessCode
   cardId:(NSString * _Nullable)cardId
+  msgHeader:(NSString * _Nullable)msgHeader
+  msgBody:(NSString * _Nullable)msgBody
   resolve:(RCTPromiseResolveBlock)resolve
   reject:(RCTPromiseRejectBlock)reject
 )
@@ -30,6 +36,8 @@ RCT_EXTERN_METHOD(
 RCT_EXTERN_METHOD(
   createAllWallets:(NSString * _Nullable)accessCode
   cardId:(NSString * _Nullable)cardId
+  msgHeader:(NSString * _Nullable)msgHeader
+  msgBody:(NSString * _Nullable)msgBody
   resolve:(RCTPromiseResolveBlock)resolve
   reject:(RCTPromiseRejectBlock)reject
 )

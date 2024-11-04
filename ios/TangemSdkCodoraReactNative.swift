@@ -8,15 +8,22 @@ class TangemSdkCodoraReactNative: NSObject {
 
   let sdk = TangemProvider.getTangemSdk()
 
-  @objc(scan:cardId:resolve:reject:)
+  @objc(scan:cardId:msgHeader:msgBody:resolve:reject:)
   public func scan(
     accessCode: String?,
     cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
 
-    let startSessionResult = await sdk.startSessionAsync(cardId: cardId, accessCode: accessCode)
+    let startSessionResult = await sdk.startSessionAsync(
+      cardId: cardId,
+      accessCode: accessCode,
+      msgHeader: msgHeader,
+      msgBody: msgBody
+    )
 
     guard startSessionResult.success, let session = startSessionResult.value else {
       reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
@@ -41,17 +48,24 @@ class TangemSdkCodoraReactNative: NSObject {
 
   } }
 
-  @objc(sign:pubKeyBase58:accessCode:cardId:resolve:reject:)
+  @objc(sign:pubKeyBase58:accessCode:cardId:msgHeader:msgBody:resolve:reject:)
   public func sign(
     unsignedHex: String,
     pubKeyBase58: String,
     accessCode: String?,
     cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
 
-    let startSessionResult = await sdk.startSessionAsync(cardId: cardId, accessCode: accessCode)
+    let startSessionResult = await sdk.startSessionAsync(
+      cardId: cardId,
+      accessCode: accessCode,
+      msgHeader: msgHeader,
+      msgBody: msgBody
+    )
 
     guard startSessionResult.success, let session = startSessionResult.value else {
       reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
@@ -75,15 +89,22 @@ class TangemSdkCodoraReactNative: NSObject {
 
   } }
 
-  @objc(purgeAllWallets:cardId:resolve:reject:)
+  @objc(purgeAllWallets:cardId:msgHeader:msgBody:resolve:reject:)
   func purgeAllWallets(
     accessCode: String?,
     cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
 
-    let startSessionResult = await sdk.startSessionAsync(cardId: cardId, accessCode: accessCode)
+    let startSessionResult = await sdk.startSessionAsync(
+      cardId: cardId,
+      accessCode: accessCode,
+      msgHeader: msgHeader,
+      msgBody: msgBody
+    )
 
     guard startSessionResult.success, let session = startSessionResult.value else {
       reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
@@ -122,15 +143,22 @@ class TangemSdkCodoraReactNative: NSObject {
 
   } }
 
-  @objc(createAllWallets:cardId:resolve:reject:)
+  @objc(createAllWallets:cardId:msgHeader:msgBody:resolve:reject:)
   public func createAllWallets(
     accessCode: String?,
     cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
 
-    let startSessionResult = await sdk.startSessionAsync(cardId: cardId, accessCode: accessCode)
+    let startSessionResult = await sdk.startSessionAsync(
+      cardId: cardId,
+      accessCode: accessCode,
+      msgHeader: msgHeader,
+      msgBody: msgBody
+    )
 
     guard startSessionResult.success, let session = startSessionResult.value else {
       reject(errorCode, "Start Session failed: \(startSessionResult.error!)", nil)
