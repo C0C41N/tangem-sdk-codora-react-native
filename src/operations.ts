@@ -59,3 +59,7 @@ export function resetCodes(params: IResetCodesParams): Promise<void> {
   const { accessCode, cardId, msgBody, msgHeader } = params;
   return TangemSdkCodoraReactNative.resetCodes(accessCode, cardId, msgHeader, msgBody);
 }
+
+export function enableBiometrics(enable: boolean): Promise<void> {
+  return TangemSdkCodoraReactNative.enableBiometrics(enable);
+}

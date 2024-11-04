@@ -298,4 +298,22 @@ class TangemSdkCodoraReactNative: NSObject {
 
   } }
 
+  @objc(enableBiometrics:resolve:reject:)
+  public func enableBiometrics(
+    _ enable: Bool,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) {
+
+    let decisionMap: [Bool: AccessCodeRequestPolicy] = [
+      true: .alwaysWithBiometrics,
+      false: .always
+    ]
+
+    sdk.config.accessCodeRequestPolicy = decisionMap[enable]!
+
+    resolve(nil)
+
+  }
+
 }

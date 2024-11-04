@@ -70,4 +70,10 @@ RCT_EXTERN_METHOD(
   reject:(RCTPromiseRejectBlock)reject
 )
 
+RCT_EXTERN_METHOD(
+  enableBiometrics:(BOOL)enable
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
 @end
