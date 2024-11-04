@@ -90,7 +90,7 @@ class TangemSdkCodoraReactNative: NSObject {
   } }
 
   @objc(purgeAllWallets:cardId:msgHeader:msgBody:resolve:reject:)
-  func purgeAllWallets(
+  public func purgeAllWallets(
     accessCode: String?,
     cardId: String?,
     msgHeader: String?,
