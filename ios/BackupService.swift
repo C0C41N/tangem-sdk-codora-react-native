@@ -27,7 +27,7 @@ public extension TangemSdkCodoraReactNative {
 
   }
 
-  @objc(readPrimaryCard:reject:)
+  @objc(backupSvcReadPrimaryCard:reject:)
   func backupSvcReadPrimaryCard(
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
