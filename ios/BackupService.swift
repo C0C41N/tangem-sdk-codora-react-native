@@ -36,7 +36,7 @@ public extension TangemSdkCodoraReactNative {
     let readPrimaryCardResult = await backupSvc.readPrimaryCardAsync()
 
     guard readPrimaryCardResult.success else {
-      handleReject(reject, readPrimaryCardResult.error!.localizedDescription)
+      handleReject(reject, readPrimaryCardResult.error!)
       return
     }
 
@@ -53,7 +53,7 @@ public extension TangemSdkCodoraReactNative {
     try backupSvc.setAccessCode(accessCode)
     resolve(backupSvcGetInfo())
   } catch {
-    handleReject(reject, error.localizedDescription)
+    handleReject(reject, error)
   } }
 
   @objc(backupSvcAddBackupCard:reject:)
@@ -65,7 +65,7 @@ public extension TangemSdkCodoraReactNative {
     let addBackupCardResult = await backupSvc.addBackupCardAsync()
 
     guard addBackupCardResult.success else {
-      handleReject(reject, addBackupCardResult.error!.localizedDescription)
+      handleReject(reject, addBackupCardResult.error!)
       return
     }
 
@@ -82,7 +82,7 @@ public extension TangemSdkCodoraReactNative {
     let proceedBackupResult = await backupSvc.proceedBackupAsync()
 
     guard proceedBackupResult.success else {
-      handleReject(reject, proceedBackupResult.error!.localizedDescription)
+      handleReject(reject, proceedBackupResult.error!)
       return
     }
 

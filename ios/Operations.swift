@@ -20,7 +20,7 @@ public extension TangemSdkCodoraReactNative {
     )
 
     guard startSessionResult.success, let session = startSessionResult.value else {
-      handleReject(reject, startSessionResult.error!.localizedDescription)
+      handleReject(reject, startSessionResult.error!)
       return
     }
 
@@ -28,7 +28,7 @@ public extension TangemSdkCodoraReactNative {
     let scanResult = await scan.runAsync(in: session)
 
     guard scanResult.success, let card = scanResult.value else {
-      handleReject(reject, scanResult.error!.localizedDescription)
+      handleReject(reject, scanResult.error!)
       session.stop()
       return
     }
@@ -62,7 +62,7 @@ public extension TangemSdkCodoraReactNative {
     )
 
     guard startSessionResult.success, let session = startSessionResult.value else {
-      handleReject(reject, startSessionResult.error!.localizedDescription)
+      handleReject(reject, startSessionResult.error!)
       return
     }
 
@@ -73,7 +73,7 @@ public extension TangemSdkCodoraReactNative {
     let signResult = await sign.runAsync(in: session)
 
     guard signResult.success, let response = signResult.value else {
-      handleReject(reject, signResult.error!.localizedDescription)
+      handleReject(reject, signResult.error!)
       session.stop()
       return
     }
@@ -101,7 +101,7 @@ public extension TangemSdkCodoraReactNative {
     )
 
     guard startSessionResult.success, let session = startSessionResult.value else {
-      handleReject(reject, startSessionResult.error!.localizedDescription)
+      handleReject(reject, startSessionResult.error!)
       return
     }
 
@@ -109,7 +109,7 @@ public extension TangemSdkCodoraReactNative {
     let scanResult = await scan.runAsync(in: session)
 
     guard scanResult.success, let card = scanResult.value else {
-      handleReject(reject, scanResult.error!.localizedDescription)
+      handleReject(reject, scanResult.error!)
       session.stop()
       return
     }
@@ -121,7 +121,7 @@ public extension TangemSdkCodoraReactNative {
       let purgeResult = await purge.runAsync(in: session)
 
       guard purgeResult.success else {
-        handleReject(reject, purgeResult.error!.localizedDescription)
+        handleReject(reject, purgeResult.error!)
         session.stop()
         return
       }
@@ -155,7 +155,7 @@ public extension TangemSdkCodoraReactNative {
     )
 
     guard startSessionResult.success, let session = startSessionResult.value else {
-      handleReject(reject, startSessionResult.error!.localizedDescription)
+      handleReject(reject, startSessionResult.error!)
       return
     }
 
@@ -168,7 +168,7 @@ public extension TangemSdkCodoraReactNative {
       let createWalletResult = await createWallet.runAsync(in: session)
 
       guard createWalletResult.success, let response = createWalletResult.value else {
-        handleReject(reject, createWalletResult.error!.localizedDescription)
+        handleReject(reject, createWalletResult.error!)
         session.stop()
         return
       }
@@ -203,7 +203,7 @@ public extension TangemSdkCodoraReactNative {
     )
 
     guard startSessionResult.success, let session = startSessionResult.value else {
-      handleReject(reject, startSessionResult.error!.localizedDescription)
+      handleReject(reject, startSessionResult.error!)
       return
     }
 
@@ -211,7 +211,7 @@ public extension TangemSdkCodoraReactNative {
     let setAccessCodeResult = await setAccessCode.runAsync(in: session)
 
     guard setAccessCodeResult.success else {
-      handleReject(reject, setAccessCodeResult.error!.localizedDescription)
+      handleReject(reject, setAccessCodeResult.error!)
       session.stop()
       return
     }
@@ -239,7 +239,7 @@ public extension TangemSdkCodoraReactNative {
     )
 
     guard startSessionResult.success, let session = startSessionResult.value else {
-      handleReject(reject, startSessionResult.error!.localizedDescription)
+      handleReject(reject, startSessionResult.error!)
       return
     }
 
@@ -247,7 +247,7 @@ public extension TangemSdkCodoraReactNative {
     let resetBackupResult = await resetBackup.runAsync(in: session)
 
     guard resetBackupResult.success else {
-      handleReject(reject, resetBackupResult.error!.localizedDescription)
+      handleReject(reject, resetBackupResult.error!)
       session.stop()
       return
     }
@@ -275,14 +275,14 @@ public extension TangemSdkCodoraReactNative {
     )
 
     guard startSessionResult.success, let session = startSessionResult.value else {
-      handleReject(reject, startSessionResult.error!.localizedDescription)
+      handleReject(reject, startSessionResult.error!)
       return
     }
 
     let resetCodesResult = await SetUserCodeCommand.resetUserCodes.runAsync(in: session)
 
     guard resetCodesResult.success else {
-      handleReject(reject, resetCodesResult.error!.localizedDescription)
+      handleReject(reject, resetCodesResult.error!)
       session.stop()
       return
     }
