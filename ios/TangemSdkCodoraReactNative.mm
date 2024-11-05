@@ -4,6 +4,8 @@
 
 + (BOOL)requiresMainQueueSetup { return NO; }
 
+/// Operations
+
 RCT_EXTERN_METHOD(
   scan:(NSString * _Nullable)accessCode
   cardId:(NSString * _Nullable)cardId
@@ -73,6 +75,34 @@ RCT_EXTERN_METHOD(
 RCT_EXTERN_METHOD(
   enableBiometrics:(BOOL)enable
   resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
+/// Backup Service
+
+RCT_EXTERN_METHOD(
+  backupSvcInit:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  backupSvcReadPrimaryCard:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  backupSvcSetAccessCode:(NSString *)accessCode
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  backupSvcAddBackupCard:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  backupSvcProceedBackup:(RCTPromiseResolveBlock)resolve
   reject:(RCTPromiseRejectBlock)reject
 )
 
