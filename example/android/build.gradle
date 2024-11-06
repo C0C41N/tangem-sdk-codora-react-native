@@ -25,6 +25,13 @@ buildscript {
 allprojects {
     repositories {
         maven {
+            url = uri("https://maven.pkg.github.com/c0c41n/tangem-sdk-android")
+            credentials {
+                username = System.getenv("GIT_TANGEM_USER")
+                password = System.getenv("GIT_TANGEM_TOKEN")
+            }
+        }
+        maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url({
                 def searchDir = rootDir.toPath()
