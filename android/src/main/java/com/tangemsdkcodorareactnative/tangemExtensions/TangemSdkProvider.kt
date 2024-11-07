@@ -1,5 +1,4 @@
 @file:Suppress("unused")
-@file:OptIn(DelicateCoroutinesApi::class)
 
 package com.tangemsdkcodorareactnative.tangemExtensions
 
@@ -26,7 +25,7 @@ object TangemSdkProvider {
       return requireNotNull(instance) { "TangemSdkProvider instance is not initialized" }
     }
 
-    fun init(context: AppCompatActivity) { GlobalScope.launch(Dispatchers.Main) {
+    suspend fun init(context: AppCompatActivity) { withContext(Dispatchers.Main) {
 
       val config = Config().apply {
         linkedTerminal = false
