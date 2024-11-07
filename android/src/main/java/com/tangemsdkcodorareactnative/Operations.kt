@@ -10,10 +10,10 @@ import kotlinx.coroutines.*
 
 @ReactMethod
 suspend fun TangemSdkCodoraReactNativeModule.scan(
-  accessCode: String,
-  cardId: String,
-  msgHeader: String,
-  msgBody: String,
+  accessCode: String?,
+  cardId: String?,
+  msgHeader: String?,
+  msgBody: String?,
   promise: Promise
 ) { GlobalScope.launch(Dispatchers.Main) {
 
