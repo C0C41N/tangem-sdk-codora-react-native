@@ -15,43 +15,44 @@ import com.tangem.sdk.extensions.getWordlist
 import com.tangem.sdk.extensions.initNfcManager
 import com.tangem.sdk.nfc.AndroidNfcAvailabilityProvider
 import com.tangem.sdk.storage.create
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 object TangemSdkProvider {
 
-    private var instance: TangemSdk? = null
+  private var instance: TangemSdk? = null
 
-    fun getInstance(): TangemSdk {
-      return requireNotNull(instance) { "TangemSdkProvider instance is not initialized" }
+  fun getInstance(): TangemSdk {
+    return requireNotNull(instance) { "TangemSdkProvider instance is not initialized" }
+  }
+
+  suspend fun init(context: AppCompatActivity) { withContext(Dispatchers.Main) {
+
+    val config = Config().apply {
+      linkedTerminal = false
+      allowUntrustedCards = true
+      filter.allowedCardTypes = FirmwareVersion.FirmwareType.values().toList()
+      defaultDerivationPaths = mutableMapOf()
+      userCodeRequestPolicy = UserCodeRequestPolicy.Always(UserCodeType.AccessCode)
     }
 
-    suspend fun init(context: AppCompatActivity) { withContext(Dispatchers.Main) {
+    val secureStorage = SecureStorage.create(context)
+    val nfcManager = TangemSdk.initNfcManager(context)
 
-      val config = Config().apply {
-        linkedTerminal = false
-        allowUntrustedCards = true
-        filter.allowedCardTypes = FirmwareVersion.FirmwareType.values().toList()
-        defaultDerivationPaths = mutableMapOf()
-        userCodeRequestPolicy = UserCodeRequestPolicy.Always(UserCodeType.AccessCode)
-      }
+    val viewDelegate = DefaultSessionViewDelegate(nfcManager, context)
+    viewDelegate.sdkConfig = config
 
-      val secureStorage = SecureStorage.create(context)
-      val nfcManager = TangemSdk.initNfcManager(context)
+    val nfcAvailabilityProvider = AndroidNfcAvailabilityProvider(context)
 
-      val viewDelegate = DefaultSessionViewDelegate(nfcManager, context)
-      viewDelegate.sdkConfig = config
+    instance = TangemSdk(
+      reader = nfcManager.reader,
+      viewDelegate = viewDelegate,
+      nfcAvailabilityProvider = nfcAvailabilityProvider,
+      secureStorage = secureStorage,
+      wordlist = Wordlist.getWordlist(context),
+      config = config,
+    )
 
-      val nfcAvailabilityProvider = AndroidNfcAvailabilityProvider(context)
-
-      instance = TangemSdk(
-          reader = nfcManager.reader,
-          viewDelegate = viewDelegate,
-          nfcAvailabilityProvider = nfcAvailabilityProvider,
-          secureStorage = secureStorage,
-          wordlist = Wordlist.getWordlist(context),
-          config = config,
-      )
-
-    } }
+  } }
 
 }

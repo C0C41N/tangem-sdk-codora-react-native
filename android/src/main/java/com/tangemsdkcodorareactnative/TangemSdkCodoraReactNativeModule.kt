@@ -4,14 +4,18 @@ import androidx.appcompat.app.AppCompatActivity
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
+import com.facebook.react.bridge.ReactMethod
 import com.tangem.TangemSdk
-import com.tangem.common.core.TangemError
 import com.tangemsdkcodorareactnative.tangemExtensions.TangemSdkProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext) :
-  ReactContextBaseJavaModule(reactContext) {
+  ReactContextBaseJavaModule(reactContext), TangemModule {
 
-  internal lateinit var sdk: TangemSdk
+  override lateinit var sdk: TangemSdk
+  private lateinit var operations: Operations
 
   companion object {
     const val NAME = "TangemSdkCodoraReactNative"
@@ -23,12 +27,24 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext) :
     super.initialize()
 
     val activity = currentActivity
-    TangemSdkProvider.init(activity as AppCompatActivity)
-    sdk = TangemSdkProvider.getInstance()
+
+    CoroutineScope(Dispatchers.IO).launch {
+      TangemSdkProvider.init(activity as AppCompatActivity)
+      sdk = TangemSdkProvider.getInstance()
+      operations = Operations(this@TangemSdkCodoraReactNativeModule)
+    }
+
   }
 
-  internal fun handleReject(promise: Promise, err: TangemError) {
-    promise.reject("TANGEM_SDK_CODORA_ERROR", err.toString())
-  }
+  // Operations
+
+  @ReactMethod
+  fun scan(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { operations.scan(accessCode, cardId, msgHeader, msgBody, promise) }
 
 }

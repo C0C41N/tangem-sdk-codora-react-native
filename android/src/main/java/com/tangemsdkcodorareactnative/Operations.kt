@@ -2,44 +2,63 @@
 
 package com.tangemsdkcodorareactnative
 
-import com.facebook.react.bridge.*
-import com.tangem.*
-import com.tangem.operations.*
-import com.tangemsdkcodorareactnative.tangemExtensions.*
-import kotlinx.coroutines.*
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.Promise
+import com.tangem.Message
+import com.tangem.crypto.encodeToBase58String
+import com.tangem.operations.ScanTask
+import com.tangemsdkcodorareactnative.tangemExtensions.runAsync
+import com.tangemsdkcodorareactnative.tangemExtensions.startSessionAsync
+import com.tangemsdkcodorareactnative.tangemExtensions.toJson
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-@ReactMethod
-suspend fun TangemSdkCodoraReactNativeModule.scan(
-  accessCode: String?,
-  cardId: String?,
-  msgHeader: String?,
-  msgBody: String?,
-  promise: Promise
-) { GlobalScope.launch(Dispatchers.Main) {
+class Operations(private val module: TangemModule) {
 
-  val startSessionResult = sdk.startSessionAsync(
-    cardId,
-    initialMessage = Message(header = msgHeader, body = msgBody),
-    accessCode
-  )
+  fun scan(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { GlobalScope.launch(Dispatchers.Main) {
 
-  if (!startSessionResult.success || startSessionResult.value == null) {
-    handleReject(promise, startSessionResult.error!!)
-    return@launch
-  }
+    val startSessionResult = module.sdk.startSessionAsync(
+      cardId,
+      initialMessage = Message(header = msgHeader, body = msgBody),
+      accessCode
+    )
 
-  val session = startSessionResult.value
+    if (!startSessionResult.success || startSessionResult.value == null) {
+      module.handleReject(promise, startSessionResult.error!!)
+      return@launch
+    }
 
-  val scanTask = ScanTask()
-  val scanResult = scanTask.runAsync(session)
+    val session = startSessionResult.value
 
-  if (!scanResult.success || scanResult.value == null) {
-    handleReject(promise, scanResult.error!!)
+    val scanTask = ScanTask()
+    val scanResult = scanTask.runAsync(session)
+
+    if (!scanResult.success || scanResult.value == null) {
+      module.handleReject(promise, scanResult.error!!)
+      session.stop()
+      return@launch
+    }
+
+    val card = scanResult.value
+
+    val resultMap = Arguments.createMap()
+    val publicKeysArray = Arguments.createArray()
+
+    card.wallets.map { it.publicKey.encodeToBase58String() }.forEach { publicKeysArray.pushString(it) }
+
+    resultMap.putString("card", card.toJson())
+    resultMap.putArray("publicKeysBase58", publicKeysArray)
+
+    promise.resolve(resultMap)
     session.stop()
-    return@launch
-  }
 
-  promise.resolve(scanResult.value)
-  session.stop()
-
-} }
+  } }
+}
