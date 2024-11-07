@@ -1,4 +1,5 @@
 @file:Suppress("unused")
+@file:OptIn(DelicateCoroutinesApi::class)
 
 package com.tangemsdkcodorareactnative.tangemExtensions
 
@@ -15,14 +16,17 @@ import com.tangem.sdk.extensions.getWordlist
 import com.tangem.sdk.extensions.initNfcManager
 import com.tangem.sdk.nfc.AndroidNfcAvailabilityProvider
 import com.tangem.sdk.storage.create
+import kotlinx.coroutines.*
 
 object TangemSdkProvider {
 
-    private lateinit var instance: TangemSdk
+    private var instance: TangemSdk? = null
 
-    fun getInstance(): TangemSdk { return instance }
+    fun getInstance(): TangemSdk {
+      return requireNotNull(instance) { "TangemSdkProvider instance is not initialized" }
+    }
 
-    fun init(context: AppCompatActivity) {
+    fun init(context: AppCompatActivity) { GlobalScope.launch(Dispatchers.Main) {
 
       val config = Config().apply {
         linkedTerminal = false
@@ -49,6 +53,6 @@ object TangemSdkProvider {
           config = config,
       )
 
-    }
+    } }
 
 }
