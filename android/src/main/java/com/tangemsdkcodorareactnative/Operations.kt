@@ -7,9 +7,9 @@ import com.facebook.react.bridge.Promise
 import com.tangem.Message
 import com.tangem.crypto.encodeToBase58String
 import com.tangem.operations.ScanTask
-import com.tangemsdkcodorareactnative.tangemExtensions.runAsync
-import com.tangemsdkcodorareactnative.tangemExtensions.startSessionAsync
-import com.tangemsdkcodorareactnative.tangemExtensions.toJson
+import com.tangem.sdk.codora.runAsync
+import com.tangem.sdk.codora.startSessionAsync
+import com.tangem.sdk.codora.toJson
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -36,7 +36,7 @@ class Operations(private val module: TangemModule) {
       return@launch
     }
 
-    val session = startSessionResult.value
+    val session = startSessionResult.value!!
 
     val scanTask = ScanTask()
     val scanResult = scanTask.runAsync(session)
@@ -47,7 +47,7 @@ class Operations(private val module: TangemModule) {
       return@launch
     }
 
-    val card = scanResult.value
+    val card = scanResult.value!!
 
     val resultMap = Arguments.createMap()
     val publicKeysArray = Arguments.createArray()
