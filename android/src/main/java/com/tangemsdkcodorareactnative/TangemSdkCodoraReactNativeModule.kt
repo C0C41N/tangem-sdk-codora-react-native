@@ -26,14 +26,11 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext) :
   override fun initialize() {
     super.initialize()
 
-    val activity = currentActivity
-
     CoroutineScope(Dispatchers.IO).launch {
-      TangemSdkProvider.init(activity as AppCompatActivity)
+      TangemSdkProvider.init(currentActivity as AppCompatActivity)
       sdk = TangemSdkProvider.getInstance()
       operations = Operations(this@TangemSdkCodoraReactNativeModule)
     }
-
   }
 
   // Operations
@@ -47,4 +44,32 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext) :
     promise: Promise
   ) { operations.scan(accessCode, cardId, msgHeader, msgBody, promise) }
 
+  @ReactMethod
+  fun sign(
+    unsignedHex: String,
+    pubKeyBase58: String,
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { operations.sign(unsignedHex, pubKeyBase58, accessCode, cardId, msgHeader, msgBody, promise) }
+
+  @ReactMethod
+  fun purgeAllWallets(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { operations.purgeAllWallets(accessCode, cardId, msgHeader, msgBody, promise) }
+
+  @ReactMethod
+  fun createAllWallets(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { operations.createAllWallets(accessCode, cardId, msgHeader, msgBody, promise) }
 }
