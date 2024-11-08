@@ -11,25 +11,25 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext) :
-  ReactContextBaseJavaModule(reactContext), TangemModule {
-
-  override lateinit var sdk: TangemSdk
-  private lateinit var operations: Operations
+class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): ReactContextBaseJavaModule(reactContext), TangemModule {
 
   companion object {
     const val NAME = "TangemSdkCodoraReactNative"
   }
 
+  override lateinit var sdk: TangemSdk
+  private lateinit var operations: Operations
+  private lateinit var backupSvc: BackupSvc
+
   override fun getName(): String { return NAME }
 
   override fun initialize() {
     super.initialize()
-
     CoroutineScope(Dispatchers.IO).launch {
       TangemSdkProvider.init(currentActivity as AppCompatActivity)
-      sdk = TangemSdkProvider.getInstance()
+      sdk = TangemSdkProvider.getSdk()
       operations = Operations(this@TangemSdkCodoraReactNativeModule)
+      backupSvc = BackupSvc(this@TangemSdkCodoraReactNativeModule)
     }
   }
 
@@ -106,5 +106,33 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext) :
     enable: Boolean,
     promise: Promise
   ) { operations.enableBiometrics(enable, promise) }
+
+  // Backup Service
+
+  @ReactMethod
+  fun backupSvcInit(
+    promise: Promise
+  ) { backupSvc.backupSvcInit(promise) }
+
+  @ReactMethod
+  fun backupSvcReadPrimaryCard(
+    promise: Promise
+  ) { backupSvc.backupSvcReadPrimaryCard(promise) }
+
+  @ReactMethod
+  fun backupSvcSetAccessCode(
+    accessCode: String,
+    promise: Promise
+  ) { backupSvc.backupSvcSetAccessCode(accessCode, promise) }
+
+  @ReactMethod
+  fun backupSvcAddBackupCard(
+    promise: Promise
+  ) { backupSvc.backupSvcAddBackupCard(promise) }
+
+  @ReactMethod
+  fun backupSvcProceedBackup(
+    promise: Promise
+  ) { backupSvc.backupSvcProceedBackup(promise) }
 
 }
