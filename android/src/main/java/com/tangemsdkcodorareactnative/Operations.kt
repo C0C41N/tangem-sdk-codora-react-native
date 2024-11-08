@@ -6,11 +6,15 @@ package com.tangemsdkcodorareactnative
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.tangem.Message
+import com.tangem.common.UserCodeType
 import com.tangem.common.card.EllipticCurve
+import com.tangem.common.core.UserCodeRequestPolicy
 import com.tangem.common.extensions.toHexString
 import com.tangem.crypto.decodeBase58
 import com.tangem.crypto.encodeToBase58String
 import com.tangem.operations.ScanTask
+import com.tangem.operations.backup.ResetBackupCommand
+import com.tangem.operations.pins.SetUserCodeCommand
 import com.tangem.operations.sign.SignCommand
 import com.tangem.operations.wallet.CreateWalletTask
 import com.tangem.operations.wallet.PurgeWalletCommand
@@ -215,6 +219,128 @@ class Operations(private val module: TangemModule) {
 
     session.stop()
     promise.resolve(createdWallets)
+
+  } }
+
+  fun setAccessCode(
+    newAccessCode: String,
+    currentAccessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { GlobalScope.launch(Dispatchers.Main) {
+
+    val startSessionResult = module.sdk.startSessionAsync(
+      cardId,
+      initialMessage = Message(header = msgHeader, body = msgBody),
+      currentAccessCode
+    )
+
+    if (!startSessionResult.success || startSessionResult.value == null) {
+      module.handleReject(promise, startSessionResult.error!!)
+      return@launch
+    }
+
+    val session = startSessionResult.value!!
+
+    val setAccessCode = SetUserCodeCommand.changeAccessCode(newAccessCode)
+    val setAccessCodeResult = setAccessCode.runAsync(session)
+
+    if (!setAccessCodeResult.success || setAccessCodeResult.value == null) {
+      module.handleReject(promise, setAccessCodeResult.error!!)
+      session.stop()
+      return@launch
+    }
+
+    session.stop()
+    promise.resolve(null)
+
+  } }
+
+  fun resetBackup(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { GlobalScope.launch(Dispatchers.Main) {
+
+    val startSessionResult = module.sdk.startSessionAsync(
+      cardId,
+      initialMessage = Message(header = msgHeader, body = msgBody),
+      accessCode
+    )
+
+    if (!startSessionResult.success || startSessionResult.value == null) {
+      module.handleReject(promise, startSessionResult.error!!)
+      return@launch
+    }
+
+    val session = startSessionResult.value!!
+
+    val resetBackup = ResetBackupCommand()
+    val resetBackupResult = resetBackup.runAsync(session)
+
+    if (!resetBackupResult.success || resetBackupResult.value == null) {
+      module.handleReject(promise, resetBackupResult.error!!)
+      session.stop()
+      return@launch
+    }
+
+    session.stop()
+    promise.resolve(null)
+
+  } }
+
+  fun resetCodes(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { GlobalScope.launch(Dispatchers.Main) {
+
+    val startSessionResult = module.sdk.startSessionAsync(
+      cardId,
+      initialMessage = Message(header = msgHeader, body = msgBody),
+      accessCode
+    )
+
+    if (!startSessionResult.success || startSessionResult.value == null) {
+      module.handleReject(promise, startSessionResult.error!!)
+      return@launch
+    }
+
+    val session = startSessionResult.value!!
+
+    val resetCodes = SetUserCodeCommand.resetUserCodes()
+    val resetCodesResult = resetCodes.runAsync(session)
+
+    if (!resetCodesResult.success || resetCodesResult.value == null) {
+      module.handleReject(promise, resetCodesResult.error!!)
+      session.stop()
+      return@launch
+    }
+
+    session.stop()
+    promise.resolve(null)
+
+  } }
+
+  fun enableBiometrics(
+    enable: Boolean,
+    promise: Promise
+  ) { GlobalScope.launch(Dispatchers.Main) {
+
+    val decisionMap: Map<Boolean, UserCodeRequestPolicy> = mapOf(
+      true to UserCodeRequestPolicy.AlwaysWithBiometrics(UserCodeType.AccessCode),
+      false to UserCodeRequestPolicy.Always(UserCodeType.AccessCode)
+    )
+
+    module.sdk.config.userCodeRequestPolicy = decisionMap[enable]!!
+
+    promise.resolve(null)
 
   } }
 

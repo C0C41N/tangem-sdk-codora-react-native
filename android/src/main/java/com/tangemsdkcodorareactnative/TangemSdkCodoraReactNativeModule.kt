@@ -72,4 +72,39 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext) :
     msgBody: String?,
     promise: Promise
   ) { operations.createAllWallets(accessCode, cardId, msgHeader, msgBody, promise) }
+
+  @ReactMethod
+  fun setAccessCode(
+    newAccessCode: String,
+    currentAccessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { operations.setAccessCode(newAccessCode, currentAccessCode, cardId, msgHeader, msgBody, promise) }
+
+  @ReactMethod
+  fun resetBackup(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { operations.resetBackup(accessCode, cardId, msgHeader, msgBody, promise) }
+
+  @ReactMethod
+  fun resetCodes(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { operations.resetCodes(accessCode, cardId, msgHeader, msgBody, promise) }
+
+  @ReactMethod
+  fun enableBiometrics(
+    enable: Boolean,
+    promise: Promise
+  ) { operations.enableBiometrics(enable, promise) }
+
 }
