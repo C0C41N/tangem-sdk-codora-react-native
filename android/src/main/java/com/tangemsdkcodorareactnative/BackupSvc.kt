@@ -25,6 +25,15 @@ class BackupSvc(private val module: TangemModule) {
 
   private fun backupSvcGetInfo(): WritableMap {
 
+    fun getState(): String {
+      return when (val state = getBackupSvc().currentState) {
+        is BackupService.State.Preparing -> "preparing"
+        is BackupService.State.FinalizingPrimaryCard -> "finalizingPrimaryCard"
+        is BackupService.State.FinalizingBackupCard -> "finalizingBackupCard:${state.index}"
+        is BackupService.State.Finished -> "finished"
+      }
+    }
+
     val infoMap = Arguments.createMap()
 
     val backupCardIds = Arguments.createArray()
@@ -35,7 +44,7 @@ class BackupSvc(private val module: TangemModule) {
     infoMap.putArray("backupCardIds", backupCardIds)
     infoMap.putBoolean("canAddBackupCards", getBackupSvc().canAddBackupCards)
     infoMap.putBoolean("canProceed", getBackupSvc().canProceed)
-    infoMap.putString("currentState", getBackupSvc().currentState.toString())
+    infoMap.putString("currentState", getState())
     infoMap.putBoolean("hasIncompletedBackup", getBackupSvc().hasIncompletedBackup)
     infoMap.putString("primaryCard", getBackupSvc().primaryCardId)
     infoMap.putBoolean("primaryCardIsSet", getBackupSvc().primaryCardIsSet)

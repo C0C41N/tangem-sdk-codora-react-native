@@ -1,10 +1,15 @@
-export interface IBackupSvcInfo {
+export interface IBackupState {
+  id: string;
+  data: string | undefined;
+}
+
+export interface IBackupSvcInfo<T = IBackupState> {
   accessCodeIsSet: boolean;
   addedBackupCardsCount: number;
   backupCardIds: string[];
   canAddBackupCards: boolean;
   canProceed: boolean;
-  currentState: string;
+  currentState: T;
   hasIncompletedBackup: boolean;
   primaryCard: string;
   primaryCardIsSet: boolean;

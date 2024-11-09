@@ -1,35 +1,45 @@
 import { TangemSdkCodoraReactNative } from './nativeModule';
-import type { IBackupSvcInfo } from './types';
-import cloneDeep from 'lodash.clonedeep';
+import type { IBackupState, IBackupSvcInfo } from './types';
 
 export class BackupService {
-  public currentState!: IBackupSvcInfo;
+  private static instance: BackupService;
 
-  private constructor() {}
+  public static async getInstance() {
+    if (!this.instance) this.instance = new BackupService(await TangemSdkCodoraReactNative.backupSvcInit());
+    return this.instance;
+  }
 
-  public static async init() {
-    const instance = new BackupService();
-    instance.currentState = await TangemSdkCodoraReactNative.backupSvcInit();
-    return instance;
+  private constructor(state: IBackupSvcInfo<string>) {
+    this.currentState = this.sanitizeState(state, false);
+  }
+
+  public currentState: IBackupSvcInfo;
+
+  private sanitizeState(state: IBackupSvcInfo<string>, update = true): IBackupSvcInfo {
+    const [id, data] = state.currentState.split(':');
+    const currentState = { id, data } as IBackupState;
+    const sanitizedState = { ...state, currentState } as IBackupSvcInfo;
+    if (update) this.currentState = sanitizedState;
+    return sanitizedState;
   }
 
   public async readPrimaryCard(): Promise<IBackupSvcInfo> {
-    this.currentState = await TangemSdkCodoraReactNative.backupSvcReadPrimaryCard();
-    return cloneDeep(this.currentState);
+    const state: IBackupSvcInfo<string> = await TangemSdkCodoraReactNative.backupSvcReadPrimaryCard();
+    return this.sanitizeState(state);
   }
 
   public async setAccessCode(accessCode: string): Promise<IBackupSvcInfo> {
-    this.currentState = await TangemSdkCodoraReactNative.backupSvcSetAccessCode(accessCode);
-    return cloneDeep(this.currentState);
+    const state: IBackupSvcInfo<string> = await TangemSdkCodoraReactNative.backupSvcSetAccessCode(accessCode);
+    return this.sanitizeState(state);
   }
 
   public async addBackupCard(): Promise<IBackupSvcInfo> {
-    this.currentState = await TangemSdkCodoraReactNative.backupSvcAddBackupCard();
-    return cloneDeep(this.currentState);
+    const state: IBackupSvcInfo<string> = await TangemSdkCodoraReactNative.backupSvcAddBackupCard();
+    return this.sanitizeState(state);
   }
 
   public async proceedBackup(): Promise<IBackupSvcInfo> {
-    this.currentState = await TangemSdkCodoraReactNative.backupSvcProceedBackup();
-    return cloneDeep(this.currentState);
+    const state: IBackupSvcInfo<string> = await TangemSdkCodoraReactNative.backupSvcProceedBackup();
+    return this.sanitizeState(state);
   }
 }

@@ -3,13 +3,27 @@ import TangemSdk_Codora
 public extension TangemSdkCodoraReactNative {
 
   private func backupSvcGetInfo() -> [String: Any] {
+
+    func getState() -> String {
+      switch backupSvc.currentState {
+      case .preparing:
+        return "preparing"
+      case .finalizingPrimaryCard:
+        return "finalizingPrimaryCard"
+      case .finalizingBackupCard(let index):
+        return "finalizingBackupCard:\(index)"
+      case .finished:
+        return "finished"
+      }
+    }
+
     return [
       "accessCodeIsSet": backupSvc.accessCodeIsSet,
       "addedBackupCardsCount": backupSvc.addedBackupCardsCount,
       "backupCardIds": backupSvc.backupCardIds,
       "canAddBackupCards": backupSvc.canAddBackupCards,
       "canProceed": backupSvc.canProceed,
-      "currentState": String(describing: backupSvc.currentState),
+      "currentState": getState(),
       "hasIncompletedBackup": backupSvc.hasIncompletedBackup,
       "primaryCard": backupSvc.primaryCard?.cardId ?? NSNull(),
       "primaryCardIsSet": backupSvc.primaryCardIsSet,
