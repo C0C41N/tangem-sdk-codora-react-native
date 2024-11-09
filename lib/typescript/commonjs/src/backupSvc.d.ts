@@ -1,8 +1,10 @@
 import type { IBackupSvcInfo } from './types';
 export declare class BackupService {
-    currentState: IBackupSvcInfo;
+    private static instance;
+    static getInstance(): Promise<BackupService>;
     private constructor();
-    static init(): Promise<BackupService>;
+    currentState: IBackupSvcInfo;
+    private sanitizeState;
     readPrimaryCard(): Promise<IBackupSvcInfo>;
     setAccessCode(accessCode: string): Promise<IBackupSvcInfo>;
     addBackupCard(): Promise<IBackupSvcInfo>;
