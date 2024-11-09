@@ -1,5 +1,12 @@
+export enum BackupState {
+  preparing = 'preparing',
+  finalizingPrimaryCard = 'finalizingPrimaryCard',
+  finalizingBackupCard = 'finalizingBackupCard',
+  finished = 'finished',
+}
+
 export interface IBackupState {
-  id: string;
+  id: BackupState;
   data: string | undefined;
 }
 
