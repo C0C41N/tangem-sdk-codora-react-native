@@ -7,6 +7,9 @@ import com.tangem.common.core.TangemError
 interface TangemModule {
     var sdk: TangemSdk
     fun handleReject(promise: Promise, err: TangemError) {
-        promise.reject("TANGEM_SDK_CODORA_ERROR", err.toString())
+        promise.reject(
+          err.customMessage,
+          err::class.simpleName!!.replaceFirstChar { it.lowercase() }
+        )
     }
 }

@@ -7,7 +7,11 @@ public class TangemSdkCodoraReactNative: NSObject {
   internal let backupSvc: BackupService = { return BackupService(sdk: TangemProvider.getTangemSdk()) }()
 
   internal func handleReject(_ reject: @escaping RCTPromiseRejectBlock, _ err: Error) {
-    reject("TANGEM_SDK_CODORA_ERROR", String(describing: err), nil)
+    reject(
+      String(err.toTangemSdkError().code),
+      String(describing: err),
+      nil
+    )
   }
 
 }
