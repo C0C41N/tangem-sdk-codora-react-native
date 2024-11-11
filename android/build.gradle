@@ -104,7 +104,7 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   // Tangem libraries
-  implementation("com.github.c0c41n:android:5.16.10")
-  implementation("com.github.c0c41n:core:5.16.10")
+  implementation("com.github.c0c41n:android:5.16.12")
+  implementation("com.github.c0c41n:core:5.16.12")
 }
 

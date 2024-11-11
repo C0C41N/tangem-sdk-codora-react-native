@@ -20,6 +20,7 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
   override lateinit var sdk: TangemSdk
   private lateinit var operations: Operations
   private lateinit var backupSvc: BackupSvc
+  private lateinit var bip39: BIP39
 
   override fun getName(): String { return NAME }
 
@@ -30,6 +31,7 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
       sdk = TangemSdkProvider.getSdk()
       operations = Operations(this@TangemSdkCodoraReactNativeModule)
       backupSvc = BackupSvc(this@TangemSdkCodoraReactNativeModule)
+      bip39 = BIP39()
     }
   }
 
@@ -134,5 +136,13 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
   fun backupSvcProceedBackup(
     promise: Promise
   ) { backupSvc.backupSvcProceedBackup(promise) }
+
+  // BIP39
+
+  @ReactMethod
+  fun generateMnemonic(
+    wordCount: Int,
+    promise: Promise
+  ) { bip39.generateMnemonic(wordCount, promise) }
 
 }
