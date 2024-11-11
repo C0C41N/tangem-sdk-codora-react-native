@@ -1,0 +1,1 @@
+{"version":3,"names":["TangemSdkCodoraReactNative","generateMnemonic","wordCount"],"sourceRoot":"../../src","sources":["bip39.ts"],"mappings":";;AAAA,SAASA,0BAA0B,QAAQ,mBAAgB;AAG3D,OAAO,SAASC,gBAAgBA,CAACC,SAAoB,EAAqB;EACxE,OAAOF,0BAA0B,CAACC,gBAAgB,CAACC,SAAS,CAAC;AAC/D","ignoreList":[]}
