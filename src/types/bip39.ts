@@ -1,4 +1,4 @@
-export enum WordCount {
+export enum BIP39WordCount {
   TWELVE = 12,
   FIFTEEN = 15,
   EIGHTEEN = 18,
