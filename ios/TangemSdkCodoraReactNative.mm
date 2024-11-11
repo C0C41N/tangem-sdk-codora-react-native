@@ -109,7 +109,7 @@ RCT_EXTERN_METHOD(
 /// BIP39
 
 RCT_EXTERN_METHOD(
-  generateMnemonic:(Int)wordCount
+  generateMnemonic:(NSInteger)wordCount
   resolve:(RCTPromiseResolveBlock)resolve
   reject:(RCTPromiseRejectBlock)reject
 )
