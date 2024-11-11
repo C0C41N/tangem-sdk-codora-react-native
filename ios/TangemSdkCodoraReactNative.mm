@@ -106,4 +106,12 @@ RCT_EXTERN_METHOD(
   reject:(RCTPromiseRejectBlock)reject
 )
 
+/// BIP39
+
+RCT_EXTERN_METHOD(
+  generateMnemonic:(Int)wordCount
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
 @end
