@@ -9,6 +9,7 @@ import type {
   IScanParams,
   IScanResult,
   ISetAccessCodeParams,
+  ISignMultipleParams,
   ISignParams,
   PurgeAllWalletsResult,
 } from './types';
@@ -33,6 +34,11 @@ export async function scan(params: IScanParams): Promise<Card> {
 export function sign(params: ISignParams): Promise<string> {
   const { unsignedHex, pubKeyBase58, accessCode, cardId, msgBody, msgHeader } = params;
   return TangemSdkCodoraReactNative.sign(unsignedHex, pubKeyBase58, accessCode, cardId, msgHeader, msgBody);
+}
+
+export function signMultiple(params: ISignMultipleParams): Promise<string[]> {
+  const { unsignedHexArr, pubKeyBase58Arr, accessCode, cardId, msgBody, msgHeader } = params;
+  return TangemSdkCodoraReactNative.sign(unsignedHexArr, pubKeyBase58Arr, accessCode, cardId, msgHeader, msgBody);
 }
 
 export function purgeAllWallets(params: IPurgeAllWalletsParams): Promise<PurgeAllWalletsResult> {

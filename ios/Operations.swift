@@ -83,6 +83,55 @@ public extension TangemSdkCodoraReactNative {
 
   } }
 
+  @objc(signMultiple:pubKeyBase58Arr:accessCode:cardId:msgHeader:msgBody:resolve:reject:)
+  func signMultiple(
+    unsignedHexArr: [String],
+    pubKeyBase58Arr: [String],
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) { Task {
+
+    let startSessionResult = await sdk.startSessionAsync(
+      cardId: cardId,
+      accessCode: accessCode,
+      msgHeader: msgHeader,
+      msgBody: msgBody
+    )
+
+    guard startSessionResult.success, let session = startSessionResult.value else {
+      handleReject(reject, startSessionResult.error!)
+      return
+    }
+
+    var signatures: [String] = []
+
+    for (unsignedHex, pubKeyBase58) in zip(unsignedHexArr, pubKeyBase58Arr) {
+
+      let pubKeyData = pubKeyBase58.base58DecodedData
+      let hashData = Data(hexString: unsignedHex)
+
+      let sign = SignCommand(hashes: [hashData], walletPublicKey: pubKeyData)
+      let signResult = await sign.runAsync(in: session)
+
+      guard signResult.success, let response = signResult.value else {
+        handleReject(reject, signResult.error!)
+        session.stop()
+        return
+      }
+
+      signatures.append(response.signatures[0].hexString)
+
+    }
+
+    session.stop()
+    resolve(signatures)
+
+  } }
+
   @objc(purgeAllWallets:cardId:msgHeader:msgBody:resolve:reject:)
   func purgeAllWallets(
     accessCode: String?,

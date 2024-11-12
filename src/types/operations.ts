@@ -21,6 +21,13 @@ export interface ISignParams extends ISessionParams {
   pubKeyBase58: string;
 }
 
+// Sign Multiple Hex
+
+export interface ISignMultipleParams extends ISessionParams {
+  unsignedHexArr: string[];
+  pubKeyBase58Arr: string[];
+}
+
 // Purge All Wallets
 
 export interface IPurgeAllWalletsParams extends ISessionParams {}

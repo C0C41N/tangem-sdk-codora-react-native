@@ -27,6 +27,17 @@ RCT_EXTERN_METHOD(
 )
 
 RCT_EXTERN_METHOD(
+  signMultiple:(NSArray<NSString *> *)unsignedHexArr
+  pubKeyBase58Arr:(NSArray<NSString *> *)pubKeyBase58Arr
+  accessCode:(NSString * _Nullable)accessCode
+  cardId:(NSString * _Nullable)cardId
+  msgHeader:(NSString * _Nullable)msgHeader
+  msgBody:(NSString * _Nullable)msgBody
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
   purgeAllWallets:(NSString * _Nullable)accessCode
   cardId:(NSString * _Nullable)cardId
   msgHeader:(NSString * _Nullable)msgHeader
