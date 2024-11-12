@@ -38,7 +38,7 @@ export function sign(params: ISignParams): Promise<string> {
 
 export function signMultiple(params: ISignMultipleParams): Promise<string[]> {
   const { unsignedHexArr, pubKeyBase58Arr, accessCode, cardId, msgBody, msgHeader } = params;
-  return TangemSdkCodoraReactNative.sign(unsignedHexArr, pubKeyBase58Arr, accessCode, cardId, msgHeader, msgBody);
+  return TangemSdkCodoraReactNative.signMultiple(unsignedHexArr, pubKeyBase58Arr, accessCode, cardId, msgHeader, msgBody);
 }
 
 export function purgeAllWallets(params: IPurgeAllWalletsParams): Promise<PurgeAllWalletsResult> {
