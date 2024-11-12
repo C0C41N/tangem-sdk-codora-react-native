@@ -53,7 +53,7 @@ export class Tron extends Chain<SendTrx> {
 
     return {
       transaction: extendedTransaction,
-      unsignedHex: extendedTransaction.raw_data_hex,
+      unsignedHex: extendedTransaction.txID,
     } as CreateTrxRet<SendTrx>;
   }
 
