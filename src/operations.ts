@@ -9,7 +9,8 @@ import type {
   IScanParams,
   IScanResult,
   ISetAccessCodeParams,
-  ISignMultipleParams,
+  ISignMulParams,
+  ISignMulResult,
   ISignParams,
   PurgeAllWalletsResult,
 } from './types';
@@ -36,9 +37,28 @@ export function sign(params: ISignParams): Promise<string> {
   return TangemSdkCodoraReactNative.sign(unsignedHex, pubKeyBase58, accessCode, cardId, msgHeader, msgBody);
 }
 
-export function signMultiple(params: ISignMultipleParams): Promise<string[]> {
-  const { unsignedHexArr, pubKeyBase58Arr, accessCode, cardId, msgBody, msgHeader } = params;
-  return TangemSdkCodoraReactNative.signMultiple(unsignedHexArr, pubKeyBase58Arr, accessCode, cardId, msgHeader, msgBody);
+export async function signMultiple(params: ISignMulParams): Promise<ISignMulResult> {
+  const { signPayloads, accessCode, cardId, msgBody, msgHeader } = params;
+
+  const pubKeyBase58List = signPayloads.map((e) => e.pubKeyBase58);
+  const unsignedHexList = signPayloads.map((e) => e.unsignedHex);
+
+  if (unsignedHexList.length !== pubKeyBase58List.length)
+    throw new Error('signMultiple: unsignedHexList.length !== pubKeyBase58List.length');
+
+  const signatures = (await TangemSdkCodoraReactNative.signMultiple(
+    unsignedHexList,
+    pubKeyBase58List,
+    accessCode,
+    cardId,
+    msgHeader,
+    msgBody
+  )) as string[];
+
+  if (signatures.length !== pubKeyBase58List.length)
+    throw new Error('signMultiple: signatures.length !== pubKeyBase58List.length');
+
+  return pubKeyBase58List.map((pubKeyBase58, i) => ({ pubKeyBase58, signedHex: signatures[i]! }));
 }
 
 export function purgeAllWallets(params: IPurgeAllWalletsParams): Promise<PurgeAllWalletsResult> {

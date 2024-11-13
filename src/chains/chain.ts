@@ -12,7 +12,7 @@ export abstract class Chain<Trx> {
   public abstract createTransaction(params: CreateTrxParams): Promise<CreateTrxRet<Trx>>;
   public abstract sendTransaction(params: SendTrxParams<Trx>): Promise<string>;
 
-  public decompressPublicKey() {
+  protected decompressPublicKey() {
     const compressedPubKeyBuffer = Buffer.from(bs58.decode(this.pubKeyBase58));
 
     const key = this.secp256k1.keyFromPublic(compressedPubKeyBuffer, 'array');
@@ -22,7 +22,7 @@ export abstract class Chain<Trx> {
     return decompressedPubKeyBuffer;
   }
 
-  public extractRS(signatureHex64: string) {
+  protected extractRS(signatureHex64: string) {
     const r = signatureHex64.slice(0, 64);
     const s = signatureHex64.slice(64);
 
@@ -32,7 +32,7 @@ export abstract class Chain<Trx> {
     return { buffer, hex };
   }
 
-  public signatureHex64To65(signatureHex64: string, trxId: string) {
+  protected signatureHex64To65(signatureHex64: string, trxId: string) {
     const { r, s } = this.extractRS(signatureHex64).buffer;
     const publicKeyHex = this.decompressPublicKey().toString('hex');
     const trxIdBuffer = Buffer.from(trxId, 'hex');
