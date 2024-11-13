@@ -14,10 +14,17 @@ export interface ISignParams extends ISessionParams {
     unsignedHex: string;
     pubKeyBase58: string;
 }
-export interface ISignMultipleParams extends ISessionParams {
-    unsignedHexArr: string[];
-    pubKeyBase58Arr: string[];
+export interface ISignTask {
+    pubKeyBase58: string;
+    unsignedHex: string;
 }
+export interface ISignMulParams extends ISessionParams {
+    signPayloads: ISignTask[];
+}
+export type ISignMulResult = {
+    pubKeyBase58: string;
+    signedHex: string;
+}[];
 export interface IPurgeAllWalletsParams extends ISessionParams {
 }
 interface IPurgeWalletResult {

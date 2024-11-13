@@ -1,7 +1,7 @@
-import type { Card, CreateAllWalletsResult, ICreateAllWalletsParams, IPurgeAllWalletsParams, IResetBackupParams, IResetCodesParams, IScanParams, ISetAccessCodeParams, ISignMultipleParams, ISignParams, PurgeAllWalletsResult } from './types';
+import type { Card, CreateAllWalletsResult, ICreateAllWalletsParams, IPurgeAllWalletsParams, IResetBackupParams, IResetCodesParams, IScanParams, ISetAccessCodeParams, ISignMulParams, ISignMulResult, ISignParams, PurgeAllWalletsResult } from './types';
 export declare function scan(params: IScanParams): Promise<Card>;
 export declare function sign(params: ISignParams): Promise<string>;
-export declare function signMultiple(params: ISignMultipleParams): Promise<string[]>;
+export declare function signMultiple(params: ISignMulParams): Promise<ISignMulResult>;
 export declare function purgeAllWallets(params: IPurgeAllWalletsParams): Promise<PurgeAllWalletsResult>;
 export declare function createAllWallets(params: ICreateAllWalletsParams): Promise<CreateAllWalletsResult>;
 export declare function setAccessCode(params: ISetAccessCodeParams): Promise<void>;

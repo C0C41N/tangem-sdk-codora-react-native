@@ -7,8 +7,8 @@ export declare abstract class Chain<Trx> {
     abstract getPublicAddress(): string;
     abstract createTransaction(params: CreateTrxParams): Promise<CreateTrxRet<Trx>>;
     abstract sendTransaction(params: SendTrxParams<Trx>): Promise<string>;
-    decompressPublicKey(): Buffer;
-    extractRS(signatureHex64: string): {
+    protected decompressPublicKey(): Buffer;
+    protected extractRS(signatureHex64: string): {
         buffer: {
             r: Buffer;
             s: Buffer;
@@ -18,6 +18,6 @@ export declare abstract class Chain<Trx> {
             s: string;
         };
     };
-    signatureHex64To65(signatureHex64: string, trxId: string): string;
+    protected signatureHex64To65(signatureHex64: string, trxId: string): string;
 }
 //# sourceMappingURL=chain.d.ts.map
