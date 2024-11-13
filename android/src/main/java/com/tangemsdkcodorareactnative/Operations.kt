@@ -5,6 +5,7 @@ package com.tangemsdkcodorareactnative
 
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReadableArray
 import com.tangem.Message
 import com.tangem.common.UserCodeType
 import com.tangem.common.card.EllipticCurve
@@ -110,6 +111,56 @@ class Operations(private val module: TangemModule) {
 
     session.stop()
     promise.resolve(signResult.value!!.signatures[0].toHexString())
+
+  } }
+
+  fun signMultiple(
+    unsignedHexArr: ReadableArray,
+    pubKeyBase58Arr: ReadableArray,
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { GlobalScope.launch(Dispatchers.Main) {
+
+    val startSessionResult = module.sdk.startSessionAsync(
+      cardId,
+      initialMessage = Message(header = msgHeader, body = msgBody),
+      accessCode
+    )
+
+    if (!startSessionResult.success || startSessionResult.value == null) {
+      module.handleReject(promise, startSessionResult.error!!)
+      return@launch
+    }
+
+    val session = startSessionResult.value!!
+    val signatures = Arguments.createArray()
+
+    val unsignedHexList = unsignedHexArr.toArrayList().map { it as String }
+    val pubKeyBase58List = pubKeyBase58Arr.toArrayList().map { it as String }
+
+    for ((unsignedHex, pubKeyBase58) in unsignedHexList.zip(pubKeyBase58List)) {
+
+      val publicKey = pubKeyBase58.decodeBase58()
+      val unsignedBytes = unsignedHex.hexToByteArray()
+
+      val signTask = SignCommand(arrayOf(unsignedBytes), publicKey)
+      val signResult = signTask.runAsync(session)
+
+      if (!signResult.success || signResult.value == null) {
+        module.handleReject(promise, signResult.error!!)
+        session.stop()
+        return@launch
+      }
+
+      signatures.pushString(signResult.value!!.signatures[0].toHexString())
+
+    }
+
+    session.stop()
+    promise.resolve(signatures)
 
   } }
 

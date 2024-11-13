@@ -5,6 +5,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableArray
 import com.tangem.TangemSdk
 import com.tangem.sdk.codora.TangemSdkProvider
 import kotlinx.coroutines.CoroutineScope
@@ -56,6 +57,17 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
     msgBody: String?,
     promise: Promise
   ) { operations.sign(unsignedHex, pubKeyBase58, accessCode, cardId, msgHeader, msgBody, promise) }
+
+  @ReactMethod
+  fun signMultiple(
+    unsignedHexArr: ReadableArray,
+    pubKeyBase58Arr: ReadableArray,
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { operations.signMultiple(unsignedHexArr, pubKeyBase58Arr, accessCode, cardId, msgHeader, msgBody, promise) }
 
   @ReactMethod
   fun purgeAllWallets(
