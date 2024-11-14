@@ -1,1 +1,1 @@
-{"version":3,"names":["TronEndpoint"],"sourceRoot":"../../../../src","sources":["chains/ethereum/types.ts"],"mappings":";;AAMA,WAAYA,YAAY,0BAAZA,YAAY;EAAZA,YAAY;EAAZA,YAAY;EAAZA,YAAY;EAAZA,YAAY;EAAA,OAAZA,YAAY;AAAA","ignoreList":[]}
+{"version":3,"names":["EthereumEndpoint"],"sourceRoot":"../../../../src","sources":["chains/ethereum/types.ts"],"mappings":";;AAAA,WAAYA,gBAAgB,0BAAhBA,gBAAgB;EAAA,OAAhBA,gBAAgB;AAAA","ignoreList":[]}
