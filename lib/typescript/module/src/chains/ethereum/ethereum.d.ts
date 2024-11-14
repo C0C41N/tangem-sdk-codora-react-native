@@ -1,14 +1,18 @@
+import { ethers, Transaction } from 'ethers';
 import { Chain } from '..';
 import type { CreateTrxParams, SendTrxParams } from '..';
-export declare class Ethereum extends Chain<null> {
+export declare class Ethereum extends Chain<Transaction> {
+    private endpoint;
+    private chainId;
     private publicAddress;
-    constructor(pubKeyBase58: string);
+    private connection;
+    constructor(pubKeyBase58: string, endpoint: string, chainId: number);
     private calculatePublicAddress;
     getPublicAddress(): string;
-    createTransaction(_params: CreateTrxParams): Promise<{
-        transaction: null;
+    createTransaction(params: CreateTrxParams): Promise<{
         unsignedHex: string;
+        transaction: ethers.Transaction;
     }>;
-    sendTransaction(_params: SendTrxParams<null>): Promise<string>;
+    sendTransaction(params: SendTrxParams<Transaction>): Promise<any>;
 }
 //# sourceMappingURL=ethereum.d.ts.map

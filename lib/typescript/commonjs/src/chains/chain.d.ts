@@ -18,6 +18,6 @@ export declare abstract class Chain<Trx> {
             s: string;
         };
     };
-    protected signatureHex64To65(signatureHex64: string, trxId: string): string;
+    protected signatureHex64To65(signatureHex64: string, unsignedHex: string): string;
 }
 //# sourceMappingURL=chain.d.ts.map
