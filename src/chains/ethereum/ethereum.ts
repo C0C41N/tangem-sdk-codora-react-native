@@ -58,7 +58,7 @@ export class Ethereum extends Chain<Transaction> {
 
   public async sendTransaction(params: SendTrxParams<Transaction>) {
     const { signedHex, transaction } = params;
-    transaction.signature = signedHex;
+    transaction.signature = `0x${signedHex}`;
     return await this.connection.send('eth_sendRawTransaction', [transaction.serialized]);
   }
 }
