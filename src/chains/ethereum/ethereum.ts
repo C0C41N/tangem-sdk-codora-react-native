@@ -45,7 +45,7 @@ export class Ethereum extends Chain<Transaction> {
     const txResolved = await ethers.resolveProperties(tx);
     const transaction = Transaction.from(txResolved);
 
-    transaction.gasLimit = gasLimit || ethers.hexlify('21000');
+    transaction.gasLimit = gasLimit || ethers.hexlify('0x5208');
     transaction.maxFeePerGas = maxFeePerGas || ethers.parseUnits('10', 'gwei');
 
     const unsignedHex = transaction.unsignedHash;
