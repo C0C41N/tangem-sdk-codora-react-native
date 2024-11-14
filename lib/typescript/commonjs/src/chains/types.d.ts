@@ -5,8 +5,8 @@ export type CreateTrxRet<T> = {
 export type CreateTrxParams = {
     receiverAddress: string;
     amount: number;
-    gasLimit?: number;
-    maxFeePerGas?: number;
+    gasLimit?: string;
+    maxFeePerGas?: string;
 };
 export type SendTrxParams<T> = {
     transaction: T;
