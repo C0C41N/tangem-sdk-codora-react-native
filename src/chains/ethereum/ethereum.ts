@@ -1,20 +1,20 @@
 import keccak from 'keccak';
-
+import { ethers, Transaction } from 'ethers';
 import { Chain } from '..';
-
 import type { CreateTrxParams, SendTrxParams } from '..';
 
-export class Ethereum extends Chain<null> {
+export class Ethereum extends Chain<Transaction> {
   private publicAddress: string;
-  // private connection: null;
+  private connection: ethers.JsonRpcProvider;
 
   constructor(
-    pubKeyBase58: string
-    // private endpoint: TronEndpoint | string = TronEndpoint.nile
+    pubKeyBase58: string,
+    private endpoint: string,
+    private chainId: number
   ) {
     super(pubKeyBase58);
     this.publicAddress = this.calculatePublicAddress();
-    // this.connection = null;
+    this.connection = new ethers.JsonRpcProvider(this.endpoint);
   }
 
   private calculatePublicAddress() {
@@ -32,14 +32,33 @@ export class Ethereum extends Chain<null> {
     return this.publicAddress;
   }
 
-  public async createTransaction(_params: CreateTrxParams) {
+  public async createTransaction(params: CreateTrxParams) {
+    const { amount, receiverAddress, gasLimit, maxFeePerGas } = params;
+
+    const tx = {
+      to: receiverAddress,
+      value: ethers.parseEther(amount.toString()),
+      nonce: await this.connection.getTransactionCount(this.publicAddress),
+      chainId: this.chainId,
+    };
+
+    const txResolved = await ethers.resolveProperties(tx);
+    const transaction = Transaction.from(txResolved);
+
+    transaction.gasLimit = gasLimit || ethers.hexlify('21000');
+    transaction.maxFeePerGas = maxFeePerGas || ethers.parseUnits('10', 'gwei');
+
+    const unsignedHex = transaction.unsignedHash;
+
     return {
-      transaction: null,
-      unsignedHex: '',
+      unsignedHex,
+      transaction,
     };
   }
 
-  public async sendTransaction(_params: SendTrxParams<null>) {
-    return '';
+  public async sendTransaction(params: SendTrxParams<Transaction>) {
+    const { signedHex, transaction } = params;
+    transaction.signature = this.signatureHex64To65(signedHex, transaction.unsignedHash);
+    return await this.connection.send('eth_sendRawTransaction', [transaction.serialized]);
   }
 }

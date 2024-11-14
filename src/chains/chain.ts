@@ -32,14 +32,14 @@ export abstract class Chain<Trx> {
     return { buffer, hex };
   }
 
-  protected signatureHex64To65(signatureHex64: string, trxId: string) {
+  protected signatureHex64To65(signatureHex64: string, unsignedHex: string) {
     const { r, s } = this.extractRS(signatureHex64).buffer;
     const publicKeyHex = this.decompressPublicKey().toString('hex');
-    const trxIdBuffer = Buffer.from(trxId, 'hex');
+    const unsignedBuffer = Buffer.from(unsignedHex, 'hex');
 
     for (const v of [27, 28]) {
       try {
-        const recoveredKey = this.secp256k1.recoverPubKey(trxIdBuffer, { r, s }, v - 27);
+        const recoveredKey = this.secp256k1.recoverPubKey(unsignedBuffer, { r, s }, v - 27);
         const recoveredPublicKey = recoveredKey.encode('hex', false);
         if (recoveredPublicKey === publicKeyHex) return Buffer.concat([r, s, Buffer.from([v])]).toString('hex');
       } catch (err) {
