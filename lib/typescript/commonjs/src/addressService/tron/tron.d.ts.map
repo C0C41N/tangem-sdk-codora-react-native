@@ -1,0 +1,1 @@
+{"version":3,"file":"tron.d.ts","sourceRoot":"","sources":["../../../../../../src/addressService/tron/tron.ts"],"names":[],"mappings":"AAKA,OAAO,EAAE,KAAK,EAAE,MAAM,UAAU,CAAC;AAEjC,qBAAa,IAAK,SAAQ,KAAK;IAC7B,OAAO,CAAC,aAAa,CAAS;gBAElB,YAAY,EAAE,MAAM;IAKhC,OAAO,CAAC,sBAAsB;IAgBvB,gBAAgB,IAAI,MAAM;CAGlC"}
