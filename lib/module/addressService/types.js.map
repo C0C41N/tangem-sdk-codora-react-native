@@ -1,1 +1,1 @@
-{"version":3,"names":["AddressSvcChain"],"sourceRoot":"../../../src","sources":["addressService/types.ts"],"mappings":";;AAAA,WAAYA,eAAe,0BAAfA,eAAe;EAAfA,eAAe;EAAfA,eAAe;EAAfA,eAAe;EAAA,OAAfA,eAAe;AAAA","ignoreList":[]}
+{"version":3,"names":["AddressServiceChain"],"sourceRoot":"../../../src","sources":["addressService/types.ts"],"mappings":";;AAAA,WAAYA,mBAAmB,0BAAnBA,mBAAmB;EAAnBA,mBAAmB;EAAnBA,mBAAmB;EAAnBA,mBAAmB;EAAA,OAAnBA,mBAAmB;AAAA","ignoreList":[]}
