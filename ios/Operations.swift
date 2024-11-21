@@ -8,7 +8,6 @@ public extension TangemSdkCodoraReactNative {
 
       UserDefaults.standard.set([languageCode], forKey: "AppleLanguages")
       UserDefaults.standard.synchronize()
-      exit(0) // Restart to apply changes
   }
 
   @objc(scan:cardId:msgHeader:msgBody:resolve:reject:)
