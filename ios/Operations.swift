@@ -2,6 +2,15 @@ import TangemSdk_Codora
 
 public extension TangemSdkCodoraReactNative {
 
+  func setAppLanguage(_ languageCode: String) {
+      let availableLanguages = ["en", "id", "vi", "zh_CN"]
+      guard availableLanguages.contains(languageCode) else { return }
+
+      UserDefaults.standard.set([languageCode], forKey: "AppleLanguages")
+      UserDefaults.standard.synchronize()
+      exit(0) // Restart to apply changes
+  }
+
   @objc(scan:cardId:msgHeader:msgBody:resolve:reject:)
   func scan(
     accessCode: String?,
@@ -11,6 +20,8 @@ public extension TangemSdkCodoraReactNative {
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
+
+    setAppLanguage("vi")
 
     let startSessionResult = await sdk.startSessionAsync(
       cardId: cardId,
