@@ -1,6 +1,6 @@
-import { TangemSdkCodoraReactNative } from './nativeModule';
+import { TangemSdkCodoraReactNative } from '../nativeModule';
+import type { Card } from './types/card';
 import type {
-  Card,
   CreateAllWalletsResult,
   ICreateAllWalletsParams,
   IPurgeAllWalletsParams,

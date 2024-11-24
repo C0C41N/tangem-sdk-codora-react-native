@@ -1,7 +1,7 @@
-export * from './types';
-
-export * from './bip39';
-export * from './backupService';
+// TangemSdk Modules
 export * from './operations';
+export * from './backupService';
 
+// Utility Modules
+export * from './bip39';
 export * from './addressService';
