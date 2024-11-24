@@ -1,4 +1,4 @@
-import type { INativeResponse } from '@types';
+import type { INativeResponse } from '../types';
 export declare enum LanguageCodes {
     English = "en",
     Indonesian = "id",

@@ -1,4 +1,4 @@
-import { Chain } from '@addressService/chain';
+import { Chain } from '../chain';
 export declare class Ethereum extends Chain {
     private publicAddress;
     constructor(pubKeyBase58: string);

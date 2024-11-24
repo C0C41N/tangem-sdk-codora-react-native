@@ -1,4 +1,4 @@
-import type { INativeResponse } from '@types';
+import type { INativeResponse } from '../types';
 import type { Card } from './types/card';
 import type { CreateAllWalletsResult, ICreateAllWalletsParams, IPurgeAllWalletsParams, IResetBackupParams, IResetCodesParams, IScanParams, ISetAccessCodeParams, ISignMulParams, ISignMulResult, ISignParams, PurgeAllWalletsResult } from './types';
 export declare function scan(params: IScanParams): Promise<INativeResponse<Card>>;

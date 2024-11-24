@@ -1,4 +1,4 @@
-import { Chain } from '@addressService/chain';
+import { Chain } from '../chain';
 export declare class Solana extends Chain {
     constructor(pubKeyBase58: string);
     getPublicAddress(): string;

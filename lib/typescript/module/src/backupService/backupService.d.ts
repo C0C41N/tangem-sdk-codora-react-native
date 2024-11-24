@@ -1,4 +1,4 @@
-import type { INativeResponse } from '@types';
+import type { INativeResponse } from '../types';
 import type { IBackupSvcInfo } from './types';
 export declare class BackupService {
     private static instance;
