@@ -3,11 +3,16 @@ import TangemSdk_Codora
 public extension TangemSdkCodoraReactNative {
 
   func setAppLanguage(_ languageCode: String) {
-      let availableLanguages = ["en", "id", "vi", "zh_CN"]
-      guard availableLanguages.contains(languageCode) else { return }
+      print("Lang String Array: \(UserDefaults.standard.stringArray(forKey: "AppleLanguages") ?? ["NA"])")
+
+      Localization.localizationsBundle = Bundle(for: type(of: UIApplication.shared.delegate!))
+
+      print("Lang String Array: \(UserDefaults.standard.stringArray(forKey: "AppleLanguages") ?? ["NA"])")
 
       UserDefaults.standard.set([languageCode], forKey: "AppleLanguages")
       UserDefaults.standard.synchronize()
+
+      print("Lang String Array: \(UserDefaults.standard.stringArray(forKey: "AppleLanguages") ?? ["NA"])")
   }
 
   @objc(scan:cardId:msgHeader:msgBody:resolve:reject:)
