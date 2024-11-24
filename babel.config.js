@@ -13,8 +13,9 @@ module.exports = {
           '@locale': './src/locale',
           '@operations': './src/operations',
 
-          '@nativeModule': './src/nativeModule.ts',
-          '@types': './src/types.ts',
+          '@withNativeResponse': './src/withNativeResponse',
+          '@nativeModule': './src/nativeModule',
+          '@types': './src/types',
         },
       },
     ],

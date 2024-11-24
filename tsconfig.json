@@ -16,6 +16,7 @@
       "@operations": ["./src/operations"],
       "@operations/*": ["./src/operations/*"],
 
+      "@withNativeResponse": ["./src/withNativeResponse"],
       "@nativeModule": ["./src/nativeModule"],
       "@types": ["./src/types"],
     },
