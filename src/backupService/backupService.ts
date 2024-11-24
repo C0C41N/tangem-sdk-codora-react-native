@@ -1,4 +1,6 @@
-import { NativeModule } from '../nativeModule';
+import { NativeModule } from '@nativeModule';
+import { withNativeResponse } from '@withNativeResponse';
+import type { INativeResponse } from '@types';
 import type { IBackupState, IBackupSvcInfo } from './types';
 
 export class BackupService {
@@ -23,23 +25,31 @@ export class BackupService {
     return sanitizedState;
   }
 
-  public async readPrimaryCard(): Promise<IBackupSvcInfo> {
-    const state: IBackupSvcInfo<string> = await NativeModule.backupSvcReadPrimaryCard();
-    return this.sanitizeState(state);
+  public async readPrimaryCard(): Promise<INativeResponse<IBackupSvcInfo>> {
+    return withNativeResponse(async () => {
+      const state: IBackupSvcInfo<string> = await NativeModule.backupSvcReadPrimaryCard();
+      return this.sanitizeState(state);
+    });
   }
 
-  public async setAccessCode(accessCode: string): Promise<IBackupSvcInfo> {
-    const state: IBackupSvcInfo<string> = await NativeModule.backupSvcSetAccessCode(accessCode);
-    return this.sanitizeState(state);
+  public async setAccessCode(accessCode: string): Promise<INativeResponse<IBackupSvcInfo>> {
+    return withNativeResponse(async () => {
+      const state: IBackupSvcInfo<string> = await NativeModule.backupSvcSetAccessCode(accessCode);
+      return this.sanitizeState(state);
+    });
   }
 
-  public async addBackupCard(): Promise<IBackupSvcInfo> {
-    const state: IBackupSvcInfo<string> = await NativeModule.backupSvcAddBackupCard();
-    return this.sanitizeState(state);
+  public async addBackupCard(): Promise<INativeResponse<IBackupSvcInfo>> {
+    return withNativeResponse(async () => {
+      const state: IBackupSvcInfo<string> = await NativeModule.backupSvcAddBackupCard();
+      return this.sanitizeState(state);
+    });
   }
 
-  public async proceedBackup(): Promise<IBackupSvcInfo> {
-    const state: IBackupSvcInfo<string> = await NativeModule.backupSvcProceedBackup();
-    return this.sanitizeState(state);
+  public async proceedBackup(): Promise<INativeResponse<IBackupSvcInfo>> {
+    return withNativeResponse(async () => {
+      const state: IBackupSvcInfo<string> = await NativeModule.backupSvcProceedBackup();
+      return this.sanitizeState(state);
+    });
   }
 }

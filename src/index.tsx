@@ -1,8 +1,8 @@
 // TangemSdk Modules
-export * from './operations';
-export * from './backupService';
+export * from '@operations';
+export * from '@backupService';
 
 // Utility Modules
-export * from './bip39';
-export * from './addressService';
-export * from './locale';
+export * from '@bip39';
+export * from '@addressService';
+export * from '@locale';

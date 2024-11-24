@@ -1,5 +1,5 @@
 import keccak from 'keccak';
-import { Chain } from '../chain';
+import { Chain } from '@addressService/chain';
 
 export class Ethereum extends Chain {
   private publicAddress: string;

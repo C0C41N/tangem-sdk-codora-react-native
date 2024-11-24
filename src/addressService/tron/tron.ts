@@ -1,9 +1,8 @@
 import bs58 from 'bs58';
 import keccak from 'keccak';
-
 import { Buffer } from 'buffer';
 import { createHash } from 'crypto';
-import { Chain } from '../chain';
+import { Chain } from '@addressService/chain';
 
 export class Tron extends Chain {
   private publicAddress: string;
