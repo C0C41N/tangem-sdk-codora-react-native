@@ -1,11 +1,11 @@
-import { TangemSdkCodoraReactNative } from '../nativeModule';
+import { NativeModule } from '../nativeModule';
 import type { IBackupState, IBackupSvcInfo } from './types';
 
 export class BackupService {
   private static instance: BackupService;
 
   public static async getInstance() {
-    if (!this.instance) this.instance = new BackupService(await TangemSdkCodoraReactNative.backupSvcInit());
+    if (!this.instance) this.instance = new BackupService(await NativeModule.backupSvcInit());
     return this.instance;
   }
 
@@ -24,22 +24,22 @@ export class BackupService {
   }
 
   public async readPrimaryCard(): Promise<IBackupSvcInfo> {
-    const state: IBackupSvcInfo<string> = await TangemSdkCodoraReactNative.backupSvcReadPrimaryCard();
+    const state: IBackupSvcInfo<string> = await NativeModule.backupSvcReadPrimaryCard();
     return this.sanitizeState(state);
   }
 
   public async setAccessCode(accessCode: string): Promise<IBackupSvcInfo> {
-    const state: IBackupSvcInfo<string> = await TangemSdkCodoraReactNative.backupSvcSetAccessCode(accessCode);
+    const state: IBackupSvcInfo<string> = await NativeModule.backupSvcSetAccessCode(accessCode);
     return this.sanitizeState(state);
   }
 
   public async addBackupCard(): Promise<IBackupSvcInfo> {
-    const state: IBackupSvcInfo<string> = await TangemSdkCodoraReactNative.backupSvcAddBackupCard();
+    const state: IBackupSvcInfo<string> = await NativeModule.backupSvcAddBackupCard();
     return this.sanitizeState(state);
   }
 
   public async proceedBackup(): Promise<IBackupSvcInfo> {
-    const state: IBackupSvcInfo<string> = await TangemSdkCodoraReactNative.backupSvcProceedBackup();
+    const state: IBackupSvcInfo<string> = await NativeModule.backupSvcProceedBackup();
     return this.sanitizeState(state);
   }
 }

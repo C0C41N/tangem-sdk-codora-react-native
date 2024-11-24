@@ -6,7 +6,7 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-export const TangemSdkCodoraReactNative = NativeModules.TangemSdkCodoraReactNative
+export const NativeModule = NativeModules.TangemSdkCodoraReactNative
   ? NativeModules.TangemSdkCodoraReactNative
   : new Proxy(
       {},

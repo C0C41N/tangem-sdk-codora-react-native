@@ -1,4 +1,4 @@
-import { TangemSdkCodoraReactNative } from '../nativeModule';
+import { NativeModule } from '../nativeModule';
 import type { Card } from './types/card';
 import type {
   CreateAllWalletsResult,
@@ -18,7 +18,7 @@ import type {
 export async function scan(params: IScanParams): Promise<Card> {
   const { accessCode, cardId, msgBody, msgHeader } = params;
 
-  const { card: cardJson, publicKeysBase58 } = (await TangemSdkCodoraReactNative.scan(
+  const { card: cardJson, publicKeysBase58 } = (await NativeModule.scan(
     accessCode,
     cardId,
     msgHeader,
@@ -34,7 +34,7 @@ export async function scan(params: IScanParams): Promise<Card> {
 
 export function sign(params: ISignParams): Promise<string> {
   const { unsignedHex, pubKeyBase58, accessCode, cardId, msgBody, msgHeader } = params;
-  return TangemSdkCodoraReactNative.sign(unsignedHex, pubKeyBase58, accessCode, cardId, msgHeader, msgBody);
+  return NativeModule.sign(unsignedHex, pubKeyBase58, accessCode, cardId, msgHeader, msgBody);
 }
 
 export async function signMultiple(params: ISignMulParams): Promise<ISignMulResult> {
@@ -46,7 +46,7 @@ export async function signMultiple(params: ISignMulParams): Promise<ISignMulResu
   if (unsignedHexList.length !== pubKeyBase58List.length)
     throw new Error('signMultiple: unsignedHexList.length !== pubKeyBase58List.length');
 
-  const signatures = (await TangemSdkCodoraReactNative.signMultiple(
+  const signatures = (await NativeModule.signMultiple(
     unsignedHexList,
     pubKeyBase58List,
     accessCode,
@@ -63,29 +63,29 @@ export async function signMultiple(params: ISignMulParams): Promise<ISignMulResu
 
 export function purgeAllWallets(params: IPurgeAllWalletsParams): Promise<PurgeAllWalletsResult> {
   const { accessCode, cardId, msgBody, msgHeader } = params;
-  return TangemSdkCodoraReactNative.purgeAllWallets(accessCode, cardId, msgHeader, msgBody);
+  return NativeModule.purgeAllWallets(accessCode, cardId, msgHeader, msgBody);
 }
 
 export function createAllWallets(params: ICreateAllWalletsParams): Promise<CreateAllWalletsResult> {
   const { accessCode, cardId, msgBody, msgHeader } = params;
-  return TangemSdkCodoraReactNative.createAllWallets(accessCode, cardId, msgHeader, msgBody);
+  return NativeModule.createAllWallets(accessCode, cardId, msgHeader, msgBody);
 }
 
 export function setAccessCode(params: ISetAccessCodeParams): Promise<void> {
   const { newAccessCode, accessCode, cardId, msgBody, msgHeader } = params;
-  return TangemSdkCodoraReactNative.setAccessCode(newAccessCode, accessCode, cardId, msgHeader, msgBody);
+  return NativeModule.setAccessCode(newAccessCode, accessCode, cardId, msgHeader, msgBody);
 }
 
 export function resetBackup(params: IResetBackupParams): Promise<void> {
   const { accessCode, cardId, msgBody, msgHeader } = params;
-  return TangemSdkCodoraReactNative.resetBackup(accessCode, cardId, msgHeader, msgBody);
+  return NativeModule.resetBackup(accessCode, cardId, msgHeader, msgBody);
 }
 
 export function resetCodes(params: IResetCodesParams): Promise<void> {
   const { accessCode, cardId, msgBody, msgHeader } = params;
-  return TangemSdkCodoraReactNative.resetCodes(accessCode, cardId, msgHeader, msgBody);
+  return NativeModule.resetCodes(accessCode, cardId, msgHeader, msgBody);
 }
 
 export function enableBiometrics(enable: boolean): Promise<void> {
-  return TangemSdkCodoraReactNative.enableBiometrics(enable);
+  return NativeModule.enableBiometrics(enable);
 }
