@@ -20,6 +20,8 @@
       "@nativeModule": ["./src/nativeModule"],
       "@types": ["./src/types"],
     },
+    "declaration": true,
+    "declarationMap": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "esModuleInterop": true,
