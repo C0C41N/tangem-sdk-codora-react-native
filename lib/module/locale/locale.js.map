@@ -1,0 +1,1 @@
+{"version":3,"names":["NativeModule","withNativeResponse","setAppLanguage","languageCode"],"sourceRoot":"../../../src","sources":["locale/locale.ts"],"mappings":";;AAAA,SAASA,YAAY,QAAQ,eAAe;AAC5C,SAASC,kBAAkB,QAAQ,qBAAqB;AAGxD,OAAO,eAAeC,cAAcA,CAACC,YAA2B,EAAgC;EAC9F,OAAOF,kBAAkB,CAAC,MAAMD,YAAY,CAACE,cAAc,CAACC,YAAY,CAAC,CAAC;AAC5E","ignoreList":[]}

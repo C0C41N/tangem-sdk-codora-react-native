@@ -1,0 +1,1 @@
+{"version":3,"file":"withNativeResponse.d.ts","sourceRoot":"","sources":["../../../../src/withNativeResponse.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,QAAQ,CAAC;AAE9C,MAAM,MAAM,aAAa,CAAC,QAAQ,IAAI,MAAM,OAAO,CAAC,QAAQ,CAAC,CAAC;AAE9D,wBAAsB,kBAAkB,CAAC,QAAQ,EAAE,MAAM,EAAE,aAAa,CAAC,QAAQ,CAAC,GAAG,OAAO,CAAC,eAAe,CAAC,QAAQ,CAAC,CAAC,CActH"}

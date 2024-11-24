@@ -1,1 +1,1 @@
-{"version":3,"file":"solana.d.ts","sourceRoot":"","sources":["../../../../../../src/addressService/solana/solana.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAE,MAAM,UAAU,CAAC;AAEjC,qBAAa,MAAO,SAAQ,KAAK;gBACnB,YAAY,EAAE,MAAM;IAIzB,gBAAgB,IAAI,MAAM;CAGlC"}
+{"version":3,"file":"solana.d.ts","sourceRoot":"","sources":["../../../../../../src/addressService/solana/solana.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAE,MAAM,uBAAuB,CAAC;AAE9C,qBAAa,MAAO,SAAQ,KAAK;gBACnB,YAAY,EAAE,MAAM;IAIzB,gBAAgB,IAAI,MAAM;CAGlC"}

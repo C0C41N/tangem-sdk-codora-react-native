@@ -1,4 +1,4 @@
-import { Chain } from '../chain';
+import { Chain } from '@addressService/chain';
 export declare class Tron extends Chain {
     private publicAddress;
     constructor(pubKeyBase58: string);

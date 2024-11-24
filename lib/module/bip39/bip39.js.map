@@ -1,0 +1,1 @@
+{"version":3,"names":["NativeModule","withNativeResponse","generateMnemonic","wordCount"],"sourceRoot":"../../../src","sources":["bip39/bip39.ts"],"mappings":";;AAAA,SAASA,YAAY,QAAQ,eAAe;AAC5C,SAASC,kBAAkB,QAAQ,qBAAqB;AAIxD,OAAO,SAASC,gBAAgBA,CAACC,SAAyB,EAAsC;EAC9F,OAAOF,kBAAkB,CAAC,MAAMD,YAAY,CAACE,gBAAgB,CAACC,SAAS,CAAC,CAAC;AAC3E","ignoreList":[]}
