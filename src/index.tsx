@@ -1,7 +1,7 @@
 export * from './types';
 
 export * from './bip39';
-export * from './backupSvc';
+export * from './backupService';
 export * from './operations';
 
 export * from './addressService';

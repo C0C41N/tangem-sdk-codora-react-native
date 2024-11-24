@@ -1,4 +1,4 @@
-import { TangemSdkCodoraReactNative } from './nativeModule';
+import { TangemSdkCodoraReactNative } from '../nativeModule';
 import type { IBackupState, IBackupSvcInfo } from './types';
 
 export class BackupService {
