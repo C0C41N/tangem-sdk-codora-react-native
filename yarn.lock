@@ -13081,6 +13081,7 @@ __metadata:
     "@react-native/metro-config": 0.76.0
     "@react-native/typescript-config": 0.76.0
     "@rnx-kit/metro-config": ^2.0.0
+    babel-plugin-module-resolver: ^5.0.2
     react: 18.3.1
     react-native: 0.76.0
     react-native-builder-bob: ^0.30.3

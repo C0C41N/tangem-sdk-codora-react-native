@@ -1,8 +1,23 @@
 {
   "compilerOptions": {
     "rootDir": ".",
+    "baseUrl": ".",
     "paths": {
-      "tangem-sdk-codora-react-native": ["./src/index"]
+      "tangem-sdk-codora-react-native": ["./src/index"],
+
+      "@addressService": ["./src/addressService"],
+      "@addressService/*": ["./src/addressService/*"],
+      "@backupService": ["./src/backupService"],
+      "@backupService/*": ["./src/backupService/*"],
+      "@bip39": ["./src/bip39"],
+      "@bip39/*": ["./src/bip39/*"],
+      "@locale": ["./src/locale"],
+      "@locale/*": ["./src/locale/*"],
+      "@operations": ["./src/operations"],
+      "@operations/*": ["./src/operations/*"],
+
+      "@nativeModule": ["./src/nativeModule"],
+      "@types": ["./src/types"],
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
