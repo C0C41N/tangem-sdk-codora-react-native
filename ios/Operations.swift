@@ -2,6 +2,8 @@ import TangemSdk_Codora
 
 public extension TangemSdkCodoraReactNative {
 
+
+
   @objc(scan:cardId:msgHeader:msgBody:resolve:reject:)
   func scan(
     accessCode: String?,
@@ -41,6 +43,8 @@ public extension TangemSdkCodoraReactNative {
     ])
 
   } }
+
+
 
   @objc(sign:pubKeyBase58:accessCode:cardId:msgHeader:msgBody:resolve:reject:)
   func sign(
@@ -82,6 +86,8 @@ public extension TangemSdkCodoraReactNative {
     resolve(response.signatures[0].hexString)
 
   } }
+
+
 
   @objc(signMultiple:pubKeyBase58Arr:accessCode:cardId:msgHeader:msgBody:resolve:reject:)
   func signMultiple(
@@ -131,6 +137,8 @@ public extension TangemSdkCodoraReactNative {
     resolve(signatures)
 
   } }
+
+
 
   @objc(purgeAllWallets:cardId:msgHeader:msgBody:resolve:reject:)
   func purgeAllWallets(
@@ -186,6 +194,8 @@ public extension TangemSdkCodoraReactNative {
 
   } }
 
+
+
   @objc(createAllWallets:cardId:msgHeader:msgBody:resolve:reject:)
   func createAllWallets(
     accessCode: String?,
@@ -233,6 +243,8 @@ public extension TangemSdkCodoraReactNative {
 
   } }
 
+
+
   @objc(setAccessCode:currentAccessCode:cardId:msgHeader:msgBody:resolve:reject:)
   func setAccessCode(
     newAccessCode: String,
@@ -270,6 +282,8 @@ public extension TangemSdkCodoraReactNative {
 
   } }
 
+
+
   @objc(resetBackup:cardId:msgHeader:msgBody:resolve:reject:)
   func resetBackup(
     accessCode: String?,
@@ -306,6 +320,8 @@ public extension TangemSdkCodoraReactNative {
 
   } }
 
+
+
   @objc(resetCodes:cardId:msgHeader:msgBody:resolve:reject:)
   func resetCodes(
     accessCode: String?,
@@ -341,6 +357,8 @@ public extension TangemSdkCodoraReactNative {
 
   } }
 
+
+
   @objc(enableBiometrics:resolve:reject:)
   func enableBiometrics(
     enable: Bool,
@@ -358,5 +376,7 @@ public extension TangemSdkCodoraReactNative {
     resolve(nil)
 
   }
+
+
 
 }

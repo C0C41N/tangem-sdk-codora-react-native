@@ -125,4 +125,12 @@ RCT_EXTERN_METHOD(
   reject:(RCTPromiseRejectBlock)reject
 )
 
+/// Locale
+
+RCT_EXTERN_METHOD(
+  setAppLanguage:(NSString *)languageCode
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
 @end

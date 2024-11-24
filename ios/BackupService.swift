@@ -2,6 +2,8 @@ import TangemSdk_Codora
 
 public extension TangemSdkCodoraReactNative {
 
+
+
   private func backupSvcGetInfo() -> [String: Any] {
 
     func getState() -> String {
@@ -28,7 +30,10 @@ public extension TangemSdkCodoraReactNative {
       "primaryCard": backupSvc.primaryCard?.cardId ?? NSNull(),
       "primaryCardIsSet": backupSvc.primaryCardIsSet,
     ]
+
   }
+
+
 
   @objc(backupSvcInit:reject:)
   func backupSvcInit(
@@ -40,6 +45,8 @@ public extension TangemSdkCodoraReactNative {
     resolve(backupSvcGetInfo())
 
   }
+
+
 
   @objc(backupSvcReadPrimaryCard:reject:)
   func backupSvcReadPrimaryCard(
@@ -58,17 +65,25 @@ public extension TangemSdkCodoraReactNative {
 
   } }
 
+
+
   @objc(backupSvcSetAccessCode:resolve:reject:)
   func backupSvcSetAccessCode(
     accessCode: String,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) { do {
+
     try backupSvc.setAccessCode(accessCode)
     resolve(backupSvcGetInfo())
+
   } catch {
+
     handleReject(reject, error)
+
   } }
+
+
 
   @objc(backupSvcAddBackupCard:reject:)
   func backupSvcAddBackupCard(
@@ -87,6 +102,8 @@ public extension TangemSdkCodoraReactNative {
 
   } }
 
+
+
   @objc(backupSvcProceedBackup:reject:)
   func backupSvcProceedBackup(
     resolve: @escaping RCTPromiseResolveBlock,
@@ -103,5 +120,7 @@ public extension TangemSdkCodoraReactNative {
     resolve(backupSvcGetInfo())
 
   } }
+
+
 
 }
