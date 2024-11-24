@@ -28,6 +28,8 @@ public extension TangemSdkCodoraReactNative {
     UserDefaults.standard.set([languageCode], forKey: "AppleLanguages")
     UserDefaults.standard.synchronize()
 
+    resolve(true)
+
   }
 
 
