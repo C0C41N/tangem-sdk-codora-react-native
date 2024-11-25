@@ -22,6 +22,7 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
   private lateinit var operations: Operations
   private lateinit var backupSvc: BackupSvc
   private lateinit var bip39: BIP39
+  private lateinit var locale: Locale
 
   override fun getName(): String { return NAME }
 
@@ -32,6 +33,7 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
       sdk = TangemSdkProvider.getSdk()
       operations = Operations(this@TangemSdkCodoraReactNativeModule)
       backupSvc = BackupSvc(this@TangemSdkCodoraReactNativeModule)
+      locale = Locale(this@TangemSdkCodoraReactNativeModule)
       bip39 = BIP39()
     }
   }
@@ -156,5 +158,13 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
     wordCount: Int,
     promise: Promise
   ) { bip39.generateMnemonic(wordCount, promise) }
+
+  // Locale
+
+  @ReactMethod
+  fun setAppLanguage(
+    languageCode: String,
+    promise: Promise
+  ) { locale.setAppLanguage(reactApplicationContext, languageCode, promise) }
 
 }
