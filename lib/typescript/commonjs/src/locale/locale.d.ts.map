@@ -1,1 +1,1 @@
-{"version":3,"file":"locale.d.ts","sourceRoot":"","sources":["../../../../../src/locale/locale.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,mBAAmB,EAAE,aAAa,EAAE,MAAM,SAAS,CAAC;AAElE,wBAAsB,cAAc,CAAC,YAAY,EAAE,aAAa,GAAG,OAAO,CAAC,mBAAmB,CAAC,CAE9F"}
+{"version":3,"file":"locale.d.ts","sourceRoot":"","sources":["../../../../../src/locale/locale.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,aAAa,EAAE,KAAK,mBAAmB,EAAE,MAAM,SAAS,CAAC;AAUlE,wBAAsB,cAAc,CAAC,YAAY,EAAE,aAAa,GAAG,OAAO,CAAC,mBAAmB,CAAC,CAE9F"}
