@@ -4,7 +4,7 @@ export enum LanguageCodes {
   English = 'en',
   Indonesian = 'id',
   Vitnamese = 'vi',
-  Chinese = 'zh-Hans',
+  Chinese = 'zh',
 }
 
 export interface ISetAppLangResponse extends INativeResponse<true> {}
