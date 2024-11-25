@@ -18,6 +18,7 @@ class Locale (private val module: TangemModule) {
     val config = Configuration(context.resources.configuration)
     config.setLocale(locale)
     context.resources.updateConfiguration(config, context.resources.displayMetrics)
+    promise.resolve(true)
 
   } catch (err: Error) {
 
