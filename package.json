@@ -2,7 +2,6 @@
   "name": "tangem-sdk-codora-react-native",
   "version": "0.1.2",
   "description": "TangemSdk for React Native",
-  "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
   "types": "./lib/typescript/module/src/index.d.ts",
@@ -12,7 +11,9 @@
       "import": {
         "types": "./lib/typescript/module/src/index.d.ts",
         "default": "./lib/module/index.js"
-      }
+      },
+      "require": "./lib/commonjs/index.js",
+      "types": "./lib/typescript/module/src/index.d.ts"
     }
   },
   "files": [
