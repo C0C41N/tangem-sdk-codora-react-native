@@ -96,8 +96,8 @@ RCT_EXTERN_METHOD(
   cardId:(NSString * _Nullable)cardId
   msgHeader:(NSString * _Nullable)msgHeader
   msgBody:(NSString * _Nullable)msgBody
-  resolve:(RCTPromiseResolveBlock):resolve
-  reject:(RCTPromiseRejectBlock):reject
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
 )
 
 /// Backup Service
