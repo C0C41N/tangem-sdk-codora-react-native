@@ -98,3 +98,14 @@ export function resetCodes(params: IResetCodesParams): Promise<INativeResponse<v
 export function enableBiometrics(enable: boolean): Promise<INativeResponse<void>> {
   return withNativeResponse(() => NativeModule.enableBiometrics(enable));
 }
+
+export function deriveHDKey(): Promise<void> {
+  const pubKeyBase58 = 'NHZxaksvBp66eAATZdhBSimgEwZWPfRYPkXYUGMCTj8';
+  const path = `m/44'/501'/141414'/0'`;
+  const accessCode = '141414';
+  const cardId = undefined;
+  const msgHeader = undefined;
+  const msgBody = undefined;
+
+  return NativeModule.deriveHDKey(pubKeyBase58, path, accessCode, cardId, msgHeader, msgBody);
+}
