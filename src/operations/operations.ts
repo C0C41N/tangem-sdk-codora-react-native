@@ -100,7 +100,7 @@ export function enableBiometrics(enable: boolean): Promise<INativeResponse<void>
 }
 
 export function deriveHDKey(): Promise<void> {
-  const pubKeyBase58 = 'NHZxaksvBp66eAATZdhBSimgEwZWPfRYPkXYUGMCTj8';
+  const pubKeyBase58 = 'C9dZ4ekUeUUb1DRkSYBetZsuF4LCrhYYVTaQ7FEkR1HW';
   const path = `m/44'/501'/141414'/0'`;
   const accessCode = '141414';
   const cardId = undefined;
