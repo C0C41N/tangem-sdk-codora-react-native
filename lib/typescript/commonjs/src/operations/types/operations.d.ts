@@ -46,5 +46,7 @@ export interface IResetBackupParams extends ISessionParams {
 }
 export interface IResetCodesParams extends ISessionParams {
 }
+export interface IGetSolanaNonceAccount extends ISessionParams {
+}
 export {};
 //# sourceMappingURL=operations.d.ts.map
