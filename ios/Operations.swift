@@ -420,7 +420,7 @@ public extension TangemSdkCodoraReactNative {
       return
     }
 
-    let derivedPubKey = derivedWallet.keys.values.first!.publicKey
+    let derivedPubKey = derivedWallet.keys.values.first!.publicKey.base58EncodedString
 
     session.stop()
     resolve(derivedPubKey)
