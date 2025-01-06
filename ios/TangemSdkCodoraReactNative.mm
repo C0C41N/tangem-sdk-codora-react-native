@@ -89,6 +89,17 @@ RCT_EXTERN_METHOD(
   reject:(RCTPromiseRejectBlock)reject
 )
 
+RCT_EXTERN_METHOD(
+  deriveHDKey:(NSString *)pubKeyBase58
+  path:(NSString *)path
+  accessCode:(NSString * _Nullable)accessCode
+  cardId:(NSString * _Nullable)cardId
+  msgHeader:(NSString * _Nullable)msgHeader
+  msgBody:(NSString * _Nullable)msgBody
+  resolve:(RCTPromiseResolveBlock):resolve
+  reject:(RCTPromiseRejectBlock):reject
+)
+
 /// Backup Service
 
 RCT_EXTERN_METHOD(

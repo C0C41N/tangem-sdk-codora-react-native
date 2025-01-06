@@ -378,5 +378,47 @@ public extension TangemSdkCodoraReactNative {
   }
 
 
+  @objc(deriveHDKey:path:accessCode:cardId:msgHeader:msgBody:resolve:reject:)
+  func deriveHDKey(
+    pubKeyBase58: String,
+    path: String,
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) { Task {
+
+    let startSessionResult = await sdk.startSessionAsync(
+      cardId: cardId,
+      accessCode: accessCode,
+      msgHeader: msgHeader,
+      msgBody: msgBody
+    )
+
+    guard startSessionResult.success, let session = startSessionResult.value else {
+      handleReject(reject, startSessionResult.error!)
+      return
+    }
+
+    let pubKeyData = pubKeyBase58.base58DecodedData
+
+    let derivationPath = try DerivationPath(rawPath: path)
+    let deriveWallet = DeriveWalletPublicKeyTask(walletPublicKey: pubKeyData, derivationPath: derivationPath)
+    let deriveWalletResult = await deriveWallet.runAsync(in: session)
+
+    guard deriveWalletResult.success, let walletPublicKey = deriveWalletResult.value else {
+      handleReject(reject, deriveWalletResult.error!)
+      session.stop()
+      return
+    }
+
+    session.stop()
+    resolve(walletPublicKey.publicKey.base58EncodedString)
+
+  } }
+
+
 
 }
