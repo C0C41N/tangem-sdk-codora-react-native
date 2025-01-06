@@ -405,7 +405,7 @@ public extension TangemSdkCodoraReactNative {
     let pubKeyData = pubKeyBase58.base58DecodedData
 
     let derivationPath = try DerivationPath(rawPath: path)
-    let deriveWallet = DeriveWalletPublicKeyTask(walletPublicKey: pubKeyData, derivationPath: derivationPath)
+    let deriveWallet = DeriveWalletPublicKeysTask(walletPublicKey: pubKeyData, derivationPaths: [derivationPath])
     let deriveWalletResult = await deriveWallet.runAsync(in: session)
 
     guard deriveWalletResult.success, let walletPublicKey = deriveWalletResult.value else {
@@ -415,7 +415,7 @@ public extension TangemSdkCodoraReactNative {
     }
 
     session.stop()
-    resolve(walletPublicKey.publicKey.base58EncodedString)
+    resolve(walletPublicKey.keys.values.first!.publicKey.base58EncodedString)
 
   } }
 
