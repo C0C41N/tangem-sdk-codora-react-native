@@ -414,8 +414,21 @@ public extension TangemSdkCodoraReactNative {
       return
     }
 
+    let pubKeyHD = walletPublicKey.keys.values.first!.publicKey
+
+    let hash = "01000103c6dadd07fa6b967f95c1c794207a6660b6c103bb3d9225cb65a32aec9233bd4a7851663184f478288effadd0b24e403c625569350166ae9dfc10e1eaf4a203b000000000000000000000000000000000000000000000000000000000000000003aab9ecdda6344c5dea7dc04242579a2171d7e0b7659ac1d16b20ab1f00ba77901020200010c020000001027000000000000"
+
+    let sign = SignCommand(hashes: [Data(hexString: hash)], walletPublicKey: pubKeyHD, derivationPath: derivationPath)
+    let signResult = await sign.runAsync(in: session)
+
+    guard signResult.success, let response = signResult.value else {
+      handleReject(reject, signResult.error!)
+      session.stop()
+      return
+    }
+
     session.stop()
-    resolve(walletPublicKey.keys.values.first!.publicKey.base58EncodedString)
+    resolve(response.signatures[0].hexString)
 
   } }
 
