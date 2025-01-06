@@ -378,6 +378,56 @@ public extension TangemSdkCodoraReactNative {
   }
 
 
+  @objc(getSolanaNonceAccount:cardId:msgHeader:msgBody:resolve:reject:)
+  func getSolanaNonceAccount(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) { Task {
+
+    let startSessionResult = await sdk.startSessionAsync(
+      cardId: cardId,
+      accessCode: accessCode,
+      msgHeader: msgHeader,
+      msgBody: msgBody
+    )
+
+    guard startSessionResult.success, let session = startSessionResult.value else {
+      handleReject(reject, startSessionResult.error!)
+      return
+    }
+
+    let scan = ScanTask()
+    let scanResult = await scan.runAsync(in: session)
+
+    guard scanResult.success, let card = scanResult.value else {
+      handleReject(reject, scanResult.error!)
+      session.stop()
+      return
+    }
+
+    let solanaMainAccount = scanResult.value!.wallets.filter { $0.curve == .ed25519 }.first!.publicKey
+    let derivationPath = try DerivationPath(rawPath: nonceHDPath)
+    let deriveWallet = DeriveWalletPublicKeysTask(walletPublicKey: solanaMainAccount, derivationPaths: [derivationPath])
+    let deriveWalletResult = await deriveWallet.runAsync(in: session)
+
+    guard deriveWalletResult.success, let derivedWallet = deriveWalletResult.value else {
+      handleReject(reject, deriveWalletResult.error!)
+      session.stop()
+      return
+    }
+
+    let derivedPubKey = derivedWallet.keys.values.first!.publicKey
+
+    session.stop()
+    resolve(derivedPubKey)
+
+  } }
+
+
   @objc(deriveHDKey:path:accessCode:cardId:msgHeader:msgBody:resolve:reject:)
   func deriveHDKey(
     pubKeyBase58: String,

@@ -7,6 +7,9 @@ public class TangemSdkCodoraReactNative: NSObject {
   internal let backupSvc: BackupService = { return BackupService(sdk: TangemProvider.getTangemSdk()) }()
 
 
+  internal let nonceHDPath = "m/44'/501'/141414'/0'"
+
+
 
   internal func handleReject(
     _ reject: @escaping RCTPromiseRejectBlock,

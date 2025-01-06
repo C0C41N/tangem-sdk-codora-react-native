@@ -72,3 +72,7 @@ export interface IResetBackupParams extends ISessionParams {}
 // Reset Codes
 
 export interface IResetCodesParams extends ISessionParams {}
+
+// Get Solana Nonce Account
+
+export interface IGetSolanaNonceAccount extends ISessionParams {}

@@ -5,6 +5,7 @@ import type { Card } from './types/card';
 import type {
   CreateAllWalletsResult,
   ICreateAllWalletsParams,
+  IGetSolanaNonceAccount,
   IPurgeAllWalletsParams,
   IResetBackupParams,
   IResetCodesParams,
@@ -97,6 +98,11 @@ export function resetCodes(params: IResetCodesParams): Promise<INativeResponse<v
 
 export function enableBiometrics(enable: boolean): Promise<INativeResponse<void>> {
   return withNativeResponse(() => NativeModule.enableBiometrics(enable));
+}
+
+export function getSolanaNonceAccount(params: IGetSolanaNonceAccount): Promise<INativeResponse<string>> {
+  const { accessCode, cardId, msgBody, msgHeader } = params;
+  return withNativeResponse(() => NativeModule.getSolanaNonceAccount(accessCode, cardId, msgHeader, msgBody));
 }
 
 export function deriveHDKey(): Promise<void> {
