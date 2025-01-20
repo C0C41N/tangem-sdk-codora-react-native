@@ -379,6 +379,65 @@ class Operations(private val module: TangemModule) {
 
   } }
 
+  fun resetCard(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { GlobalScope.launch(Dispatchers.Main) {
+
+    val startSessionResult = module.sdk.startSessionAsync(
+      cardId,
+      initialMessage = Message(header = msgHeader, body = msgBody),
+      accessCode
+    )
+
+    if (!startSessionResult.success || startSessionResult.value == null) {
+      module.handleReject(promise, startSessionResult.error!!)
+      return@launch
+    }
+
+    val session = startSessionResult.value!!
+
+    val scanTask = ScanTask()
+    val scanResult = scanTask.runAsync(session)
+
+    if (!scanResult.success || scanResult.value == null) {
+      module.handleReject(promise, scanResult.error!!)
+      session.stop()
+      return@launch
+    }
+
+    val card = scanResult.value!!
+
+    for (wallet in card.wallets) {
+      val purgeTask = PurgeWalletCommand(wallet.publicKey)
+      val purgeResult = purgeTask.runAsync(session)
+
+      if (!purgeResult.success || purgeResult.value == null) {
+        module.handleReject(promise, purgeResult.error!!)
+        session.stop()
+        return@launch
+      }
+    }
+
+    ResetBackupCommand().runAsync(session)
+
+    val resetCodes = SetUserCodeCommand.resetUserCodes()
+    val resetCodesResult = resetCodes.runAsync(session)
+
+    if (!resetCodesResult.success || resetCodesResult.value == null) {
+      module.handleReject(promise, resetCodesResult.error!!)
+      session.stop()
+      return@launch
+    }
+
+    session.stop()
+    promise.resolve(null)
+
+  } }
+
   fun enableBiometrics(
     enable: Boolean,
     promise: Promise

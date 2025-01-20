@@ -118,6 +118,15 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
   ) { operations.resetCodes(accessCode, cardId, msgHeader, msgBody, promise) }
 
   @ReactMethod
+  fun resetCard(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { operations.resetCard(accessCode, cardId, msgHeader, msgBody, promise) }
+
+  @ReactMethod
   fun enableBiometrics(
     enable: Boolean,
     promise: Promise
