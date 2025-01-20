@@ -359,6 +359,72 @@ public extension TangemSdkCodoraReactNative {
 
 
 
+  @objc(resetCard:cardId:msgHeader:msgBody:resolve:reject:)
+  func resetCard(
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) { Task {
+
+    let startSessionResult = await sdk.startSessionAsync(
+      cardId: cardId,
+      accessCode: accessCode,
+      msgHeader: msgHeader,
+      msgBody: msgBody
+    )
+
+    guard startSessionResult.success, let session = startSessionResult.value else {
+      handleReject(reject, startSessionResult.error!)
+      return
+    }
+
+    let scan = ScanTask()
+    let scanResult = await scan.runAsync(in: session)
+
+    guard scanResult.success, let card = scanResult.value else {
+      handleReject(reject, scanResult.error!)
+      session.stop()
+      return
+    }
+
+    for wallet in card.wallets {
+      let purge = PurgeWalletCommand(publicKey: wallet.publicKey)
+      let purgeResult = await purge.runAsync(in: session)
+
+      guard purgeResult.success else {
+        handleReject(reject, purgeResult.error!)
+        session.stop()
+        return
+      }
+    }
+
+    let resetBackup = ResetBackupCommand()
+    let resetBackupResult = await resetBackup.runAsync(in: session)
+
+    guard resetBackupResult.success else {
+      handleReject(reject, resetBackupResult.error!)
+      session.stop()
+      return
+    }
+
+    let resetCodesResult = await SetUserCodeCommand.resetUserCodes.runAsync(in: session)
+
+    guard resetCodesResult.success else {
+      handleReject(reject, resetCodesResult.error!)
+      session.stop()
+      return
+    }
+
+    session.stop()
+    resolve(nil)
+
+  } }
+
+
+
   @objc(enableBiometrics:resolve:reject:)
   func enableBiometrics(
     enable: Bool,
