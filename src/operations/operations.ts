@@ -7,6 +7,7 @@ import type {
   ICreateAllWalletsParams,
   IPurgeAllWalletsParams,
   IResetBackupParams,
+  IResetCardParams,
   IResetCodesParams,
   IScanParams,
   IScanResult,
@@ -93,6 +94,11 @@ export function resetBackup(params: IResetBackupParams): Promise<INativeResponse
 export function resetCodes(params: IResetCodesParams): Promise<INativeResponse<void>> {
   const { accessCode, cardId, msgBody, msgHeader } = params;
   return withNativeResponse(() => NativeModule.resetCodes(accessCode, cardId, msgHeader, msgBody));
+}
+
+export function resetCard(params: IResetCardParams): Promise<INativeResponse<void>> {
+  const { accessCode, cardId, msgBody, msgHeader } = params;
+  return withNativeResponse(() => NativeModule.resetCard(accessCode, cardId, msgHeader, msgBody));
 }
 
 export function enableBiometrics(enable: boolean): Promise<INativeResponse<void>> {

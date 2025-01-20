@@ -72,3 +72,7 @@ export interface IResetBackupParams extends ISessionParams {}
 // Reset Codes
 
 export interface IResetCodesParams extends ISessionParams {}
+
+// Reset Card
+
+export interface IResetCardParams extends ISessionParams {}
