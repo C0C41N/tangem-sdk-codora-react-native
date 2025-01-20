@@ -404,12 +404,6 @@ public extension TangemSdkCodoraReactNative {
     let resetBackup = ResetBackupCommand()
     let resetBackupResult = await resetBackup.runAsync(in: session)
 
-    guard resetBackupResult.success else {
-      handleReject(reject, resetBackupResult.error!)
-      session.stop()
-      return
-    }
-
     let resetCodesResult = await SetUserCodeCommand.resetUserCodes.runAsync(in: session)
 
     guard resetCodesResult.success else {
