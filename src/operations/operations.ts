@@ -1,3 +1,4 @@
+import { Secp } from '@addressService/chain';
 import { NativeModule } from '@nativeModule';
 import { withNativeResponse } from '@withNativeResponse';
 import type { INativeResponse } from '@types';
@@ -40,8 +41,12 @@ export async function scan(params: IScanParams): Promise<INativeResponse<Card>> 
 export function sign(params: ISignParams): Promise<INativeResponse<string>> {
   const { unsignedHex, pubKeyBase58, accessCode, cardId, msgBody, msgHeader } = params;
 
-  return withNativeResponse(() => {
-    return NativeModule.sign(unsignedHex, pubKeyBase58, accessCode, cardId, msgHeader, msgBody);
+  return withNativeResponse(async () => {
+    const sig = (await NativeModule.sign(unsignedHex, pubKeyBase58, accessCode, cardId, msgHeader, msgBody)) as string;
+    const isSecp = sig.length === 128;
+    if (!isSecp) return sig;
+    const secp = new Secp(pubKeyBase58);
+    return secp.toSigHex65(sig, unsignedHex);
   });
 }
 
@@ -67,7 +72,14 @@ export async function signMultiple(params: ISignMulParams): Promise<INativeRespo
     if (signatures.length !== pubKeyBase58List.length)
       throw new Error('signMultiple: signatures.length !== pubKeyBase58List.length');
 
-    return pubKeyBase58List.map((pubKeyBase58, i) => ({ pubKeyBase58, signedHex: signatures[i]! }));
+    const signedHexList = signatures.map((sig, i) => {
+      const isSecp = sig.length === 128;
+      if (!isSecp) return sig;
+      const secp = new Secp(pubKeyBase58List[i]!);
+      return secp.toSigHex65(sig, unsignedHexList[i]!);
+    });
+
+    return pubKeyBase58List.map((pubKeyBase58, i) => ({ pubKeyBase58, signedHex: signedHexList[i]! }));
   });
 }
 

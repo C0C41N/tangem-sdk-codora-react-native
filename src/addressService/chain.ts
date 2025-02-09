@@ -17,4 +17,30 @@ export abstract class Chain {
 
     return decompressedPubKeyBuffer;
   }
+
+  public toSigHex65(sigHex64: string, digestHex: string) {
+    const sig64 = Buffer.from(sigHex64, 'hex');
+    const digest = Buffer.from(digestHex, 'hex');
+    const pubKey = bs58.decode(this.pubKeyBase58);
+
+    const r = sig64.subarray(0, 32);
+    const s = sig64.subarray(32, 64);
+
+    for (let v = 0; v < 2; v++) {
+      const recKey = this.secp256k1.recoverPubKey(digest, { r, s }, v);
+      const recPubKey = Buffer.from(recKey.encode('array', true));
+
+      if (Buffer.from(recPubKey).equals(pubKey)) {
+        return Buffer.concat([sig64, Buffer.from([27 + v])]).toString('hex');
+      }
+    }
+
+    throw new Error('Unable to recover public key');
+  }
+}
+
+export class Secp extends Chain {
+  public getPublicAddress(): string {
+    throw new Error('Method not implemented.');
+  }
 }
