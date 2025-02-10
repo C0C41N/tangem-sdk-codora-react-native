@@ -37,7 +37,7 @@ export abstract class Chain {
       const recPubKey = Buffer.from(recKey.encode('array', true));
       console.log('all good - 5', v);
 
-      if (Buffer.from(recPubKey).equals(pubKey)) {
+      if (Buffer.from(recPubKey).equals(Buffer.from(pubKey))) {
         console.log('all good - 6', v);
         return Buffer.concat([sig64, Buffer.from([27 + v])]).toString('hex');
       }
