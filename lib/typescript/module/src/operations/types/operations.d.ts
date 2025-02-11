@@ -5,6 +5,7 @@ interface ISessionParams {
     msgBody?: string;
 }
 export interface IScanParams extends ISessionParams {
+    migrate?: boolean;
 }
 export interface IScanResult {
     card: string;
@@ -26,6 +27,7 @@ export type ISignMulResult = {
     signedHex: string;
 }[];
 export interface IPurgeAllWalletsParams extends ISessionParams {
+    onlyEd25519?: boolean;
 }
 interface IPurgeWalletResult {
     curve: string;
