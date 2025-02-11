@@ -10,6 +10,7 @@ public extension TangemSdkCodoraReactNative {
     cardId: String?,
     msgHeader: String?,
     msgBody: String?,
+//    migrate: Bool?,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
@@ -29,11 +30,73 @@ public extension TangemSdkCodoraReactNative {
     let scan = ScanTask()
     let scanResult = await scan.runAsync(in: session)
 
-    guard scanResult.success, let card = scanResult.value else {
+    guard scanResult.success, var card = scanResult.value else {
       handleReject(reject, scanResult.error!)
       session.stop()
       return
     }
+
+    // NEW IMP STARTS HERE
+
+    let hasSecp = card.wallets.contains { $0.curve == .secp256k1 }
+    let hasEd = card.wallets.contains { $0.curve == .ed25519 }
+    let shouldMigrate = hasSecp && !hasEd
+
+    print("shouldMigrate", shouldMigrate)
+
+    if (shouldMigrate) {
+
+      /// derive entropy
+
+      let secpWallet = card.wallets.first { $0.curve == .secp256k1 }!
+      let secpPubKeyData = secpWallet.publicKey
+
+      let path = try! DerivationPath(rawPath: "m/44'/501'/141414'/0'")
+
+      let deriveHDWallet = DeriveWalletPublicKeyTask(walletPublicKey: secpPubKeyData, derivationPath: path)
+      let deriveHDWalletResult = await deriveHDWallet.runAsync(in: session)
+
+      guard deriveHDWalletResult.success else {
+          print("DeriveWalletPublicKeyTask failed: \(deriveHDWalletResult.error!)")
+          session.stop()
+          return
+      }
+
+      let HDWallet = deriveHDWalletResult.value!
+      let entropy = (HDWallet.publicKey + HDWallet.chainCode).getSha256()
+
+      print("pubKey", HDWallet.publicKey.base58EncodedString)
+      print("chainCode", HDWallet.chainCode.base58EncodedString)
+      print("concatenated", (HDWallet.publicKey + HDWallet.chainCode).base58EncodedString)
+      print("sha256(pubKey)", HDWallet.publicKey.getSha256())
+      print("sha256(chainCode)", HDWallet.chainCode.getSha256())
+      print("sha256(concatenated)", (HDWallet.publicKey + HDWallet.chainCode).getSha256())
+
+      /// import new wallet
+
+      let bip39 = BIP39()
+
+      let mnemonicComponents = try! bip39.generateMnemonic(from: entropy, wordlist: .en)
+      let mnemonicString = bip39.convertToMnemonicString(mnemonicComponents)
+
+      let mnemonic = try Mnemonic(with: mnemonicString)
+      let factory = AnyMasterKeyFactory(mnemonic: mnemonic, passphrase: "")
+      let privateKey = try factory.makeMasterKey(for: .ed25519)
+
+      let createWallet = CreateWalletTask(curve: .ed25519, privateKey: privateKey)
+      let createWalletResult = await createWallet.runAsync(in: session)
+
+      guard createWalletResult.success else {
+          print("CreateWalletTask failed: \(createWalletResult.error!)")
+          session.stop()
+          return
+      }
+
+      card.wallets.append(createWalletResult.value!.wallet)
+
+    }
+
+    // NEW IMP ENDS HERE
 
     session.stop()
 
@@ -218,7 +281,7 @@ public extension TangemSdkCodoraReactNative {
       return
     }
 
-    let curves: [EllipticCurve] = [.secp256k1, .ed25519, .bls12381_G2_AUG, .bip0340, .ed25519_slip0010]
+    let curves: [EllipticCurve] = [.bip0340, .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP, .ed25519, .ed25519_slip0010, .secp256k1, .secp256r1]
 
     var createdWallets: [[String: Any]] = []
 
