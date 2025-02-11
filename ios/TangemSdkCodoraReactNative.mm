@@ -43,7 +43,7 @@ RCT_EXTERN_METHOD(
   cardId:(NSString * _Nullable)cardId
   msgHeader:(NSString * _Nullable)msgHeader
   msgBody:(NSString * _Nullable)msgBody
-  onlyEd25519:(Bool)onlyEd25519
+  onlyEd25519:(BOOL)onlyEd25519
   resolve:(RCTPromiseResolveBlock)resolve
   reject:(RCTPromiseRejectBlock)reject
 )
