@@ -237,6 +237,13 @@ public extension TangemSdkCodoraReactNative {
     var purgedWallets: [[String: Any]] = []
 
     for wallet in card.wallets {
+
+      // ONLY ED25519
+
+      if (wallet.curve != .ed25519) { continue }
+
+      // ONLY ED25519
+
       let purge = PurgeWalletCommand(publicKey: wallet.publicKey)
       let purgeResult = await purge.runAsync(in: session)
 
