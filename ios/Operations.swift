@@ -4,16 +4,18 @@ public extension TangemSdkCodoraReactNative {
 
 
 
-  @objc(scan:cardId:msgHeader:msgBody:resolve:reject:)
+  @objc(scan:cardId:msgHeader:msgBody:migrate:resolve:reject:)
   func scan(
     accessCode: String?,
     cardId: String?,
     msgHeader: String?,
     msgBody: String?,
-//    migrate: Bool?,
+    migrate: Bool,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
+
+    /// start session
 
     let startSessionResult = await sdk.startSessionAsync(
       cardId: cardId,
@@ -27,6 +29,8 @@ public extension TangemSdkCodoraReactNative {
       return
     }
 
+    /// initiate scan task
+
     let scan = ScanTask()
     let scanResult = await scan.runAsync(in: session)
 
@@ -36,13 +40,13 @@ public extension TangemSdkCodoraReactNative {
       return
     }
 
-    // NEW IMP STARTS HERE
+    /// check if migration is necessary
 
     let hasSecp = card.wallets.contains { $0.curve == .secp256k1 }
     let hasEd = card.wallets.contains { $0.curve == .ed25519 }
-    let shouldMigrate = hasSecp && !hasEd
+    let shouldMigrate = migrate && hasSecp && !hasEd
 
-    print("shouldMigrate", shouldMigrate)
+    /// initiate migration
 
     if (shouldMigrate) {
 
@@ -57,20 +61,14 @@ public extension TangemSdkCodoraReactNative {
       let deriveHDWalletResult = await deriveHDWallet.runAsync(in: session)
 
       guard deriveHDWalletResult.success else {
-          print("DeriveWalletPublicKeyTask failed: \(deriveHDWalletResult.error!)")
+          handleReject(reject, deriveHDWalletResult.error!)
           session.stop()
           return
       }
 
       let HDWallet = deriveHDWalletResult.value!
-      let entropy = (HDWallet.publicKey + HDWallet.chainCode).getSha256()
-
-      print("pubKey", HDWallet.publicKey.base58EncodedString)
-      print("chainCode", HDWallet.chainCode.base58EncodedString)
-      print("concatenated", (HDWallet.publicKey + HDWallet.chainCode).base58EncodedString)
-      print("sha256(pubKey)", HDWallet.publicKey.getSha256().base58EncodedString)
-      print("sha256(chainCode)", HDWallet.chainCode.getSha256().base58EncodedString)
-      print("sha256(concatenated)", (HDWallet.publicKey + HDWallet.chainCode).getSha256().base58EncodedString)
+      let sourceOfEntropy = HDWallet.publicKey + HDWallet.chainCode
+      let entropy = sourceOfEntropy.getSha256()
 
       /// import new wallet
 
@@ -87,22 +85,16 @@ public extension TangemSdkCodoraReactNative {
       let createWalletResult = await createWallet.runAsync(in: session)
 
       guard createWalletResult.success else {
-          print("CreateWalletTask failed: \(createWalletResult.error!)")
+          handleReject(reject, createWalletResult.error!)
           session.stop()
           return
       }
 
+      /// include newly created wallet in scan result
+
       card.wallets.append(createWalletResult.value!.wallet)
 
     }
-
-    card.wallets.forEach {
-      let curve = $0.curve.rawValue
-      let pubKey = $0.publicKey.base58EncodedString
-      print("Wallet | \(curve) | \(pubKey)")
-    }
-
-    // NEW IMP ENDS HERE
 
     session.stop()
 
@@ -209,12 +201,13 @@ public extension TangemSdkCodoraReactNative {
 
 
 
-  @objc(purgeAllWallets:cardId:msgHeader:msgBody:resolve:reject:)
+  @objc(purgeAllWallets:cardId:msgHeader:msgBody:onlyEd25519:resolve:reject:)
   func purgeAllWallets(
     accessCode: String?,
     cardId: String?,
     msgHeader: String?,
     msgBody: String?,
+    onlyEd25519: Bool,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
@@ -244,11 +237,7 @@ public extension TangemSdkCodoraReactNative {
 
     for wallet in card.wallets {
 
-      // ONLY ED25519
-
-      if (wallet.curve != .ed25519) { continue }
-
-      // ONLY ED25519
+      if (onlyEd25519 && wallet.curve != .ed25519) { continue }
 
       let purge = PurgeWalletCommand(publicKey: wallet.publicKey)
       let purgeResult = await purge.runAsync(in: session)
