@@ -68,9 +68,9 @@ public extension TangemSdkCodoraReactNative {
       print("pubKey", HDWallet.publicKey.base58EncodedString)
       print("chainCode", HDWallet.chainCode.base58EncodedString)
       print("concatenated", (HDWallet.publicKey + HDWallet.chainCode).base58EncodedString)
-      print("sha256(pubKey)", HDWallet.publicKey.getSha256())
-      print("sha256(chainCode)", HDWallet.chainCode.getSha256())
-      print("sha256(concatenated)", (HDWallet.publicKey + HDWallet.chainCode).getSha256())
+      print("sha256(pubKey)", HDWallet.publicKey.getSha256().base58EncodedString)
+      print("sha256(chainCode)", HDWallet.chainCode.getSha256().base58EncodedString)
+      print("sha256(concatenated)", (HDWallet.publicKey + HDWallet.chainCode).getSha256().base58EncodedString)
 
       /// import new wallet
 
@@ -94,6 +94,12 @@ public extension TangemSdkCodoraReactNative {
 
       card.wallets.append(createWalletResult.value!.wallet)
 
+    }
+
+    card.wallets.forEach {
+      let curve = $0.curve.rawValue
+      let pubKey = $0.publicKey.base58EncodedString
+      print("Wallet | \(curve) | \(pubKey)")
     }
 
     // NEW IMP ENDS HERE
