@@ -7,7 +7,9 @@ interface ISessionParams {
 
 // Scan Card
 
-export interface IScanParams extends ISessionParams {}
+export interface IScanParams extends ISessionParams {
+  migrate?: boolean;
+}
 
 export interface IScanResult {
   card: string;
@@ -39,7 +41,9 @@ export type ISignMulResult = {
 
 // Purge All Wallets
 
-export interface IPurgeAllWalletsParams extends ISessionParams {}
+export interface IPurgeAllWalletsParams extends ISessionParams {
+  onlyEd25519?: boolean;
+}
 
 interface IPurgeWalletResult {
   curve: string;

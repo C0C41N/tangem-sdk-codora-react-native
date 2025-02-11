@@ -21,13 +21,15 @@ import type {
 
 export async function scan(params: IScanParams): Promise<INativeResponse<Card>> {
   const { accessCode, cardId, msgBody, msgHeader } = params;
+  const migrate = params.migrate ?? false;
 
   return withNativeResponse(async () => {
     const { card: cardJson, publicKeysBase58 } = (await NativeModule.scan(
       accessCode,
       cardId,
       msgHeader,
-      msgBody
+      msgBody,
+      migrate
     )) as IScanResult;
 
     const card = JSON.parse(cardJson) as Card;
@@ -85,7 +87,8 @@ export async function signMultiple(params: ISignMulParams): Promise<INativeRespo
 
 export function purgeAllWallets(params: IPurgeAllWalletsParams): Promise<INativeResponse<PurgeAllWalletsResult>> {
   const { accessCode, cardId, msgBody, msgHeader } = params;
-  return withNativeResponse(() => NativeModule.purgeAllWallets(accessCode, cardId, msgHeader, msgBody));
+  const onlyEd25519 = params.onlyEd25519 ?? false;
+  return withNativeResponse(() => NativeModule.purgeAllWallets(accessCode, cardId, msgHeader, msgBody, onlyEd25519));
 }
 
 export function createAllWallets(params: ICreateAllWalletsParams): Promise<INativeResponse<CreateAllWalletsResult>> {
