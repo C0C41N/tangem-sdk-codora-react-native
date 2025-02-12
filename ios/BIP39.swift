@@ -33,4 +33,24 @@ public extension TangemSdkCodoraReactNative {
 
 
 
+  @objc(mnemonicComponents:resolve:reject:)
+  func validateMnemonic(
+    mnemonicComponents: [String],
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) { do {
+
+    let bip39 = BIP39()
+    try bip39.validate(mnemonicComponents: mnemonicComponents)
+
+    resolve(true)
+
+  } catch {
+
+    resolve(false)
+
+  } }
+
+
+
 }

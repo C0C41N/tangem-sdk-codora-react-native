@@ -504,4 +504,43 @@ public extension TangemSdkCodoraReactNative {
 
 
 
+  @objc(enableUserCodeRecovery:accessCode:cardId:msgHeader:msgBody:resolve:reject:)
+  func enableUserCodeRecovery(
+    enable: Bool,
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    resolve: @escaping RCTPromiseResolveBlock,
+    reject: @escaping RCTPromiseRejectBlock
+  ) { Task {
+
+    let startSessionResult = await sdk.startSessionAsync(
+      cardId: cardId,
+      accessCode: accessCode,
+      msgHeader: msgHeader,
+      msgBody: msgBody
+    )
+
+    guard startSessionResult.success, let session = startSessionResult.value else {
+      handleReject(reject, startSessionResult.error!)
+      return
+    }
+
+    let userCodeRecovery = SetUserCodeRecoveryAllowedTask(isAllowed: enable)
+    let userCodeRecoveryResult = await userCodeRecovery.runAsync(in: session)
+
+    guard userCodeRecoveryResult.success else {
+      handleReject(reject, userCodeRecoveryResult.error!)
+      session.stop()
+      return
+    }
+
+    session.stop()
+    resolve(nil)
+
+  } }
+
+
+
 }

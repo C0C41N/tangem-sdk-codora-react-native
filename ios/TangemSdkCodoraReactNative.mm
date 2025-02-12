@@ -100,6 +100,16 @@ RCT_EXTERN_METHOD(
   reject:(RCTPromiseRejectBlock)reject
 )
 
+RCT_EXTERN_METHOD(
+  enableUserCodeRecovery:(BOOL)enable
+  accessCode:(NSString * _Nullable)accessCode
+  cardId:(NSString * _Nullable)cardId
+  msgHeader:(NSString * _Nullable)msgHeader
+  msgBody:(NSString * _Nullable)msgBody
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
 /// Backup Service
 
 RCT_EXTERN_METHOD(
@@ -132,6 +142,12 @@ RCT_EXTERN_METHOD(
 
 RCT_EXTERN_METHOD(
   generateMnemonic:(NSInteger)wordCount
+  resolve:(RCTPromiseResolveBlock)resolve
+  reject:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  validateMnemonic:(NSArray<NSString *> *)mnemonicComponents
   resolve:(RCTPromiseResolveBlock)resolve
   reject:(RCTPromiseRejectBlock)reject
 )
