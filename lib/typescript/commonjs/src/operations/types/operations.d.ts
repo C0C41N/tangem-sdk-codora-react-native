@@ -50,5 +50,8 @@ export interface IResetCodesParams extends ISessionParams {
 }
 export interface IResetCardParams extends ISessionParams {
 }
+export interface IEnableUserCodeRecoveryParams extends ISessionParams {
+    enable: boolean;
+}
 export {};
 //# sourceMappingURL=operations.d.ts.map
