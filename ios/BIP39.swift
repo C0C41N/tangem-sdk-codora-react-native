@@ -33,7 +33,7 @@ public extension TangemSdkCodoraReactNative {
 
 
 
-  @objc(mnemonicComponents:resolve:reject:)
+  @objc(validateMnemonic:resolve:reject:)
   func validateMnemonic(
     mnemonicComponents: [String],
     resolve: @escaping RCTPromiseResolveBlock,
