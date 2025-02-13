@@ -5,7 +5,7 @@ interface ISessionParams {
     msgBody?: string;
 }
 export interface IScanParams extends ISessionParams {
-    migrate?: boolean;
+    migratePublicKey?: string;
 }
 export interface IScanResult {
     card: string;
