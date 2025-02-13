@@ -80,3 +80,9 @@ export interface IResetCodesParams extends ISessionParams {}
 // Reset Card
 
 export interface IResetCardParams extends ISessionParams {}
+
+// Enable User Code Recovery
+
+export interface IEnableUserCodeRecoveryParams extends ISessionParams {
+  enable: boolean;
+}

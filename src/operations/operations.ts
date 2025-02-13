@@ -6,6 +6,7 @@ import type { Card } from './types/card';
 import type {
   CreateAllWalletsResult,
   ICreateAllWalletsParams,
+  IEnableUserCodeRecoveryParams,
   IPurgeAllWalletsParams,
   IResetBackupParams,
   IResetCardParams,
@@ -118,4 +119,9 @@ export function resetCard(params: IResetCardParams): Promise<INativeResponse<voi
 
 export function enableBiometrics(enable: boolean): Promise<INativeResponse<void>> {
   return withNativeResponse(() => NativeModule.enableBiometrics(enable));
+}
+
+export function enableUserCodeRecovery(params: IEnableUserCodeRecoveryParams): Promise<INativeResponse<void>> {
+  const { enable, accessCode, cardId, msgBody, msgHeader } = params;
+  return withNativeResponse(() => NativeModule.enableUserCodeRecovery(enable, accessCode, cardId, msgHeader, msgBody));
 }
