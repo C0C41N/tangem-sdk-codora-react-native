@@ -4,13 +4,13 @@ public extension TangemSdkCodoraReactNative {
 
 
 
-  @objc(scan:cardId:msgHeader:msgBody:migrate:resolve:reject:)
+  @objc(scan:cardId:msgHeader:msgBody:migratePublicKey:resolve:reject:)
   func scan(
     accessCode: String?,
     cardId: String?,
     msgHeader: String?,
     msgBody: String?,
-    migrate: Bool,
+    migratePublicKey: String?,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
@@ -42,9 +42,32 @@ public extension TangemSdkCodoraReactNative {
 
     /// check if migration is necessary
 
-    let hasSecp = card.wallets.contains { $0.curve == .secp256k1 }
-    let hasEd = card.wallets.contains { $0.curve == .ed25519 }
-    let shouldMigrate = migrate && hasSecp && !hasEd
+    let shouldMigrate = {
+
+      if (migratePublicKey == nil) { return false }
+
+      let hasSecp = card.wallets.contains { $0.curve == .secp256k1 && $0.publicKey.hexString == migratePublicKey }
+
+      if (!hasSecp) {
+        handleReject(reject, "initiated: migratePublicKey not found or isn't of secp256k1")
+        return false
+      }
+
+      let hasEd = card.wallets.contains { $0.curve == .ed25519 }
+
+      if (hasEd) {
+        handleReject(reject, "initiated: card already contains a wallet of curve ed25519")
+        return false
+      }
+
+      return true
+
+    }()
+
+    if (!shouldMigrate && migratePublicKey != nil) {
+      session.stop()
+      return
+    }
 
     /// initiate migration
 
@@ -52,7 +75,7 @@ public extension TangemSdkCodoraReactNative {
 
       /// derive entropy
 
-      let secpWallet = card.wallets.first { $0.curve == .secp256k1 }!
+      let secpWallet = card.wallets.first { $0.publicKey.hexString == migratePublicKey }!
       let secpPubKeyData = secpWallet.publicKey
 
       let path = try! DerivationPath(rawPath: "m/44'/501'/141414'/0'")
@@ -61,9 +84,9 @@ public extension TangemSdkCodoraReactNative {
       let deriveHDWalletResult = await deriveHDWallet.runAsync(in: session)
 
       guard deriveHDWalletResult.success else {
-          handleReject(reject, deriveHDWalletResult.error!)
-          session.stop()
-          return
+        handleReject(reject, "initiated: \(deriveHDWalletResult.error!)")
+        session.stop()
+        return
       }
 
       let HDWallet = deriveHDWalletResult.value!
@@ -85,7 +108,7 @@ public extension TangemSdkCodoraReactNative {
       let createWalletResult = await createWallet.runAsync(in: session)
 
       guard createWalletResult.success else {
-          handleReject(reject, createWalletResult.error!)
+          handleReject(reject, "keypair_created: \(createWalletResult.error!)")
           session.stop()
           return
       }
