@@ -22,6 +22,7 @@ import com.tangem.operations.backup.ResetBackupCommand
 import com.tangem.operations.derivation.DeriveWalletPublicKeyTask
 import com.tangem.operations.pins.SetUserCodeCommand
 import com.tangem.operations.sign.SignCommand
+import com.tangem.operations.usersetttings.SetUserCodeRecoveryAllowedTask
 import com.tangem.operations.wallet.CreateWalletTask
 import com.tangem.operations.wallet.PurgeWalletCommand
 import com.tangem.sdk.codora.TangemSdkProvider
@@ -535,6 +536,42 @@ class Operations(private val module: TangemModule) {
 
     module.sdk.config.userCodeRequestPolicy = decisionMap[enable]!!
 
+    promise.resolve(null)
+
+  } }
+
+  fun enableUserCodeRecovery(
+    enable: Boolean,
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { GlobalScope.launch(Dispatchers.Main) {
+
+    val startSessionResult = module.sdk.startSessionAsync(
+      cardId,
+      initialMessage = Message(header = msgHeader, body = msgBody),
+      accessCode
+    )
+
+    if (!startSessionResult.success || startSessionResult.value == null) {
+      module.handleReject(promise, startSessionResult.error!!)
+      return@launch
+    }
+
+    val session = startSessionResult.value!!
+
+    val userCodeRecovery = SetUserCodeRecoveryAllowedTask(enable)
+    val userCodeRecoveryResult = userCodeRecovery.runAsync(session)
+
+    if (!userCodeRecoveryResult.success || userCodeRecoveryResult.value == null) {
+      module.handleReject(promise, userCodeRecoveryResult.error!!)
+      session.stop()
+      return@launch
+    }
+
+    session.stop()
     promise.resolve(null)
 
   } }

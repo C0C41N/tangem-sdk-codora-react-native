@@ -2,6 +2,8 @@ package com.tangemsdkcodorareactnative
 
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReadableArray
+import com.tangem.common.core.TangemSdkError
 import com.tangem.crypto.bip39.EntropyLength
 import com.tangem.sdk.codora.TangemSdkProvider
 
@@ -26,5 +28,23 @@ class BIP39 {
     promise.resolve(mnemonic)
 
   }
+
+  fun validateMnemonic(
+    mnemonicComponents: ReadableArray,
+    promise: Promise
+  ) { try {
+
+    val bip39 = TangemSdkProvider.getBip39()
+    val mnemonicList = mnemonicComponents.toArrayList().map { it as String }
+
+    bip39.validate(mnemonicList)
+
+    promise.resolve(true)
+
+  } catch (e: TangemSdkError) {
+
+    promise.resolve(false)
+
+  } }
 
 }

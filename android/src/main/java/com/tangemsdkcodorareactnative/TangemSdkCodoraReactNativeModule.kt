@@ -134,6 +134,16 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
     promise: Promise
   ) { operations.enableBiometrics(enable, promise) }
 
+  @ReactMethod
+  fun enableUserCodeRecovery(
+    enable: Boolean,
+    accessCode: String?,
+    cardId: String?,
+    msgHeader: String?,
+    msgBody: String?,
+    promise: Promise
+  ) { operations.enableUserCodeRecovery(enable, accessCode, cardId, msgHeader, msgBody, promise) }
+
   // Backup Service
 
   @ReactMethod
@@ -169,6 +179,12 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
     wordCount: Int,
     promise: Promise
   ) { bip39.generateMnemonic(wordCount, promise) }
+
+  @ReactMethod
+  fun validateMnemonic(
+    mnemonicComponents: ReadableArray,
+    promise: Promise
+  ) { bip39.validateMnemonic(mnemonicComponents, promise) }
 
   // Locale
 
