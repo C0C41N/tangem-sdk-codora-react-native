@@ -330,7 +330,16 @@ class Operations(private val module: TangemModule) {
     }
 
     val session = startSessionResult.value!!
-    val curves: List<EllipticCurve> = listOf(EllipticCurve.Secp256k1, EllipticCurve.Ed25519, EllipticCurve.Bls12381G2Aug, EllipticCurve.Bip0340, EllipticCurve.Ed25519Slip0010)
+    val curves: List<EllipticCurve> = listOf(
+      EllipticCurve.Bip0340,
+      EllipticCurve.Bls12381G2,
+      EllipticCurve.Bls12381G2Aug,
+      EllipticCurve.Bls12381G2Pop,
+      EllipticCurve.Ed25519,
+      EllipticCurve.Ed25519Slip0010,
+      EllipticCurve.Secp256k1,
+      EllipticCurve.Secp256r1,
+    )
 
     val createdWallets = Arguments.createArray()
 
