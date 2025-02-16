@@ -78,8 +78,9 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
     cardId: String?,
     msgHeader: String?,
     msgBody: String?,
+    onlyEd25519: Boolean,
     promise: Promise
-  ) { operations.purgeAllWallets(accessCode, cardId, msgHeader, msgBody, promise) }
+  ) { operations.purgeAllWallets(accessCode, cardId, msgHeader, msgBody, onlyEd25519, promise) }
 
   @ReactMethod
   fun createAllWallets(

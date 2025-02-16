@@ -138,6 +138,7 @@ class Operations(private val module: TangemModule) {
       // Include newly created wallet in scan result
 
       card = card.copy(wallets = card.wallets.plus(createWalletResult.value!!.wallet))
+
     }
 
 
@@ -249,6 +250,7 @@ class Operations(private val module: TangemModule) {
     cardId: String?,
     msgHeader: String?,
     msgBody: String?,
+    onlyEd25519: Boolean,
     promise: Promise
   ) { GlobalScope.launch(Dispatchers.Main) {
 
@@ -279,6 +281,9 @@ class Operations(private val module: TangemModule) {
     val purgedWallets = Arguments.createArray()
 
     for (wallet in card.wallets) {
+
+      if (onlyEd25519 && wallet.curve != EllipticCurve.Ed25519) continue
+
       val purgeTask = PurgeWalletCommand(wallet.publicKey)
       val purgeResult = purgeTask.runAsync(session)
 
