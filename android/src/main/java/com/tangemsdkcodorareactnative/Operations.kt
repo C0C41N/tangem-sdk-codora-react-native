@@ -10,15 +10,21 @@ import com.tangem.Message
 import com.tangem.common.UserCodeType
 import com.tangem.common.card.EllipticCurve
 import com.tangem.common.core.UserCodeRequestPolicy
+import com.tangem.common.extensions.calculateSha256
 import com.tangem.common.extensions.toHexString
+import com.tangem.crypto.bip39.DefaultMnemonic
 import com.tangem.crypto.decodeBase58
 import com.tangem.crypto.encodeToBase58String
+import com.tangem.crypto.hdWallet.DerivationPath
+import com.tangem.crypto.hdWallet.masterkey.AnyMasterKeyFactory
 import com.tangem.operations.ScanTask
 import com.tangem.operations.backup.ResetBackupCommand
+import com.tangem.operations.derivation.DeriveWalletPublicKeyTask
 import com.tangem.operations.pins.SetUserCodeCommand
 import com.tangem.operations.sign.SignCommand
 import com.tangem.operations.wallet.CreateWalletTask
 import com.tangem.operations.wallet.PurgeWalletCommand
+import com.tangem.sdk.codora.TangemSdkProvider
 import com.tangem.sdk.codora.runAsync
 import com.tangem.sdk.codora.startSessionAsync
 import com.tangem.sdk.codora.toJson
@@ -34,6 +40,7 @@ class Operations(private val module: TangemModule) {
     cardId: String?,
     msgHeader: String?,
     msgBody: String?,
+    migratePublicKey: String?,
     promise: Promise
   ) { GlobalScope.launch(Dispatchers.Main) {
 
@@ -59,7 +66,80 @@ class Operations(private val module: TangemModule) {
       return@launch
     }
 
-    val card = scanResult.value!!
+    var card = scanResult.value!!
+
+    val shouldMigrate = run {
+      if (migratePublicKey == null) return@run false
+
+      val hasSecp = card.wallets.any { it.curve == EllipticCurve.Secp256k1 && it.publicKey.toHexString() == migratePublicKey }
+
+      if (!hasSecp) {
+        module.handleReject(promise, "initiated: migratePublicKey not found or isn't of secp256k1")
+        return@run false
+      }
+
+      val hasEd = card.wallets.any { it.curve == EllipticCurve.Ed25519 }
+
+      if (hasEd) {
+        module.handleReject(promise, "initiated: card already contains a wallet of curve ed25519")
+        return@run false
+      }
+
+      true
+    }
+
+    if (!shouldMigrate && migratePublicKey != null) {
+      session.stop()
+      return@launch
+    }
+
+    if (shouldMigrate) {
+
+      // Derive entropy
+
+      val secpWallet = card.wallets.first { it.publicKey.toHexString() == migratePublicKey }
+      val secpPubKeyData = secpWallet.publicKey
+
+      val path = DerivationPath("m/44'/501'/141414'/0'")
+
+      val deriveHDWallet = DeriveWalletPublicKeyTask(secpPubKeyData, path)
+      val deriveHDWalletResult = deriveHDWallet.runAsync(session)
+
+      if (!deriveHDWalletResult.success) {
+        module.handleReject(promise, "initiated: ${deriveHDWalletResult.error!!}")
+        session.stop()
+        return@launch
+      }
+
+      val hdWallet = deriveHDWalletResult.value!!
+      val sourceOfEntropy = hdWallet.publicKey + hdWallet.chainCode
+      val entropy = sourceOfEntropy.calculateSha256()
+
+      // Import new wallet
+
+      val bip39 = TangemSdkProvider.getBip39()
+
+      val mnemonicComponents = bip39.generateMnemonic(entropy, bip39.wordlist)
+      val mnemonicString = mnemonicComponents.joinToString(" ")
+
+      val mnemonic = DefaultMnemonic(mnemonicString, bip39.wordlist)
+      val factory = AnyMasterKeyFactory(mnemonic, "")
+      val privateKey = factory.makeMasterKey(EllipticCurve.Ed25519)
+
+      val createWallet = CreateWalletTask(EllipticCurve.Ed25519, privateKey)
+      val createWalletResult = createWallet.runAsync(session)
+
+      if (!createWalletResult.success) {
+        module.handleReject(promise, "keypair_created: ${createWalletResult.error!!}")
+        session.stop()
+        return@launch
+      }
+
+      // Include newly created wallet in scan result
+
+      card = card.copy(wallets = card.wallets.plus(createWalletResult.value!!.wallet))
+    }
+
 
     val resultMap = Arguments.createMap()
     val publicKeysArray = Arguments.createArray()
