@@ -9,7 +9,7 @@ export declare abstract class Chain {
 }
 export declare class Secp {
     private static secp256k1;
-    static isSecp(pubKeyBase58: string): boolean;
+    static validate(pubKeyBase58: string): boolean;
     static toSigHex65(pubKeyBase58: string, sigHex64: string, digestHex: string): string;
 }
 //# sourceMappingURL=chain.d.ts.map

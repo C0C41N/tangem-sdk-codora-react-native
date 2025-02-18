@@ -23,10 +23,14 @@ export abstract class Chain {
 export class Secp {
   private static secp256k1 = new EC('secp256k1');
 
-  public static isSecp(pubKeyBase58: string) {
-    const pubKeyHex = Buffer.from(bs58.decode(pubKeyBase58)).toString('hex');
-    const pubKey = this.secp256k1.keyFromPublic(pubKeyHex, 'hex');
-    return pubKey.validate().result;
+  public static validate(pubKeyBase58: string) {
+    try {
+      const pubKeyHex = Buffer.from(bs58.decode(pubKeyBase58)).toString('hex');
+      const pubKey = this.secp256k1.keyFromPublic(pubKeyHex, 'hex');
+      return pubKey.validate().result;
+    } catch (error) {
+      return false;
+    }
   }
 
   public static toSigHex65(pubKeyBase58: string, sigHex64: string, digestHex: string) {

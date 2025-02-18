@@ -45,7 +45,7 @@ export function sign(params: ISignParams): Promise<INativeResponse<string>> {
 
   return withNativeResponse(async () => {
     const sig = (await NativeModule.sign(unsignedHex, pubKeyBase58, accessCode, cardId, msgHeader, msgBody)) as string;
-    if (!Secp.isSecp(pubKeyBase58)) return sig;
+    if (!Secp.validate(pubKeyBase58)) return sig;
     return Secp.toSigHex65(pubKeyBase58, sig, unsignedHex);
   });
 }
@@ -75,7 +75,7 @@ export async function signMultiple(params: ISignMulParams): Promise<INativeRespo
     const signedHexList = signatures.map((sig, i) => {
       const pubKeyBase58 = pubKeyBase58List[i]!;
       const unsignedHex = unsignedHexList[i]!;
-      if (!Secp.isSecp(pubKeyBase58)) return sig;
+      if (!Secp.validate(pubKeyBase58)) return sig;
       return Secp.toSigHex65(pubKeyBase58, sig, unsignedHex);
     });
 
