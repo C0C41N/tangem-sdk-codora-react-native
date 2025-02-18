@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer';
 import { ec as EC } from 'elliptic';
 export declare abstract class Chain {
     protected pubKeyBase58: string;
@@ -9,5 +10,6 @@ export declare abstract class Chain {
 }
 export declare class Secp extends Chain {
     getPublicAddress(): string;
+    isSecp(): boolean;
 }
 //# sourceMappingURL=chain.d.ts.map

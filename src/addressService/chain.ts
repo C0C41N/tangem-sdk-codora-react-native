@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer';
 import bs58 from 'bs58';
 import { ec as EC } from 'elliptic';
 
@@ -42,5 +43,11 @@ export abstract class Chain {
 export class Secp extends Chain {
   public getPublicAddress(): string {
     throw new Error('Method not implemented.');
+  }
+
+  public isSecp() {
+    const pubKeyHex = Buffer.from(bs58.decode(this.pubKeyBase58)).toString('hex');
+    const pubKey = this.secp256k1.keyFromPublic(pubKeyHex, 'hex');
+    return pubKey.validate().result;
   }
 }
