@@ -70,15 +70,20 @@ export async function signMultiple(params: ISignMulParams): Promise<INativeRespo
       msgBody
     )) as string[];
 
+    // Log
+    console.log({ signatures });
+
     if (signatures.length !== pubKeyBase58List.length)
       throw new Error('signMultiple: signatures.length !== pubKeyBase58List.length');
 
     const signedHexList = signatures.map((sig, i) => {
       const secp = new Secp(pubKeyBase58List[i]!);
 
+      // Log
+      console.log({ isSecp: secp.isSecp() });
+
       if (!secp.isSecp()) return sig;
-      return sig;
-      // return secp.toSigHex65(sig, unsignedHexList[i]!);
+      return secp.toSigHex65(sig, unsignedHexList[i]!);
     });
 
     return pubKeyBase58List.map((pubKeyBase58, i) => ({ pubKeyBase58, signedHex: signedHexList[i]! }));
