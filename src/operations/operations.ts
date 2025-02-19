@@ -79,7 +79,11 @@ export async function signMultiple(params: ISignMulParams): Promise<INativeRespo
       return Secp.toSigHex65(pubKeyBase58, sig, unsignedHex);
     });
 
-    return pubKeyBase58List.map((pubKeyBase58, i) => ({ pubKeyBase58, signedHex: signedHexList[i]! }));
+    return pubKeyBase58List.map((pubKeyBase58, i) => ({
+      pubKeyBase58,
+      unsignedHex: unsignedHexList[i]!,
+      signedHex: signedHexList[i]!,
+    }));
   });
 }
 

@@ -24,6 +24,7 @@ export interface ISignMulParams extends ISessionParams {
 }
 export type ISignMulResult = {
     pubKeyBase58: string;
+    unsignedHex: string;
     signedHex: string;
 }[];
 export interface IPurgeAllWalletsParams extends ISessionParams {
