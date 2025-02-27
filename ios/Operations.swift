@@ -16,6 +16,14 @@ public extension TangemSdkCodoraReactNative {
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
 
+    func resolveResponse(card: Card, migrateStatus: String) {
+      resolve([
+        "card": card.json,
+        "publicKeysBase58": card.wallets.map { $0.publicKey.base58EncodedString },
+        "migrateStatus": migrateStatus
+      ])
+    }
+
     /// start session
 
     let startSessionResult = await sdk.startSessionAsync(
@@ -48,17 +56,17 @@ public extension TangemSdkCodoraReactNative {
       if (!migrate) { return 0 }
 
       if (!card.wallets.contains { $0.curve == .secp256k1 }) {
-        handleReject(reject, "initiated: card does not have any wallet of curve secp256k1")
+        resolveResponse(card: card, migrateStatus: "initiated: card does not have any wallet of curve secp256k1")
         return -1
       }
 
       if (card.wallets.contains { $0.curve == .ed25519 }) {
-        handleReject(reject, "initiated: card already contains a wallet of curve ed25519")
+        resolveResponse(card: card, migrateStatus: "initiated: card already contains a wallet of curve ed25519")
         return -1
       }
 
       if (migratePublicKey != nil && !card.wallets.contains { $0.curve == .secp256k1 && $0.publicKey.hexString == migratePublicKey }) {
-        handleReject(reject, "initiated: card does not contain a wallet of curve secp256k1 that matches the provided public key")
+        resolveResponse(card: card, migrateStatus: "initiated: card does not contain a wallet of curve secp256k1 that matches the provided public key")
         return -1
       }
 
@@ -95,7 +103,7 @@ public extension TangemSdkCodoraReactNative {
       let deriveHDWalletResult = await deriveHDWallet.runAsync(in: session)
 
       guard deriveHDWalletResult.success else {
-        handleReject(reject, "initiated: \(deriveHDWalletResult.error!)")
+        resolveResponse(card: card, migrateStatus: "initiated: \(deriveHDWalletResult.error!)")
         session.stop()
         return
       }
@@ -119,9 +127,9 @@ public extension TangemSdkCodoraReactNative {
       let createWalletResult = await createWallet.runAsync(in: session)
 
       guard createWalletResult.success else {
-          handleReject(reject, "keypair_created: \(createWalletResult.error!)")
-          session.stop()
-          return
+        resolveResponse(card: card, migrateStatus: "keypair_created: \(createWalletResult.error!)")
+        session.stop()
+        return
       }
 
       /// include newly created wallet in scan result
@@ -132,10 +140,11 @@ public extension TangemSdkCodoraReactNative {
 
     session.stop()
 
-    resolve([
-      "card": card.json,
-      "publicKeysBase58": card.wallets.map { $0.publicKey.base58EncodedString }
-    ])
+    let migrateStatus = shouldMigrate > 0
+      ? "keypair_created: successfully migrated"
+      : "migration not requested"
+
+    resolveResponse(card: card, migrateStatus: migrateStatus)
 
   } }
 

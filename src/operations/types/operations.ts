@@ -1,3 +1,5 @@
+import type { Card } from './card';
+
 interface ISessionParams {
   accessCode?: string;
   cardId?: string;
@@ -15,6 +17,12 @@ export interface IScanParams extends ISessionParams {
 export interface IScanResult {
   card: string;
   publicKeysBase58: string[];
+  migrateStatus: string;
+}
+
+export interface IScanResponse {
+  card: Card;
+  migrateStatus: string;
 }
 
 // Sign Hex

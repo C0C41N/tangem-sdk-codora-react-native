@@ -1,7 +1,6 @@
 import type { INativeResponse } from '../types';
-import type { Card } from './types/card';
-import type { CreateAllWalletsResult, ICreateAllWalletsParams, IEnableUserCodeRecoveryParams, IPurgeAllWalletsParams, IResetBackupParams, IResetCardParams, IResetCodesParams, IScanParams, ISetAccessCodeParams, ISignMulParams, ISignMulResult, ISignParams, PurgeAllWalletsResult } from './types';
-export declare function scan(params: IScanParams): Promise<INativeResponse<Card>>;
+import type { CreateAllWalletsResult, ICreateAllWalletsParams, IEnableUserCodeRecoveryParams, IPurgeAllWalletsParams, IResetBackupParams, IResetCardParams, IResetCodesParams, IScanParams, IScanResponse, ISetAccessCodeParams, ISignMulParams, ISignMulResult, ISignParams, PurgeAllWalletsResult } from './types';
+export declare function scan(params: IScanParams): Promise<INativeResponse<IScanResponse>>;
 export declare function sign(params: ISignParams): Promise<INativeResponse<string>>;
 export declare function signMultiple(params: ISignMulParams): Promise<INativeResponse<ISignMulResult>>;
 export declare function purgeAllWallets(params: IPurgeAllWalletsParams): Promise<INativeResponse<PurgeAllWalletsResult>>;

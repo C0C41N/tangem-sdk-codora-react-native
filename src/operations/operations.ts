@@ -12,6 +12,7 @@ import type {
   IResetCardParams,
   IResetCodesParams,
   IScanParams,
+  IScanResponse,
   IScanResult,
   ISetAccessCodeParams,
   ISignMulParams,
@@ -20,26 +21,23 @@ import type {
   PurgeAllWalletsResult,
 } from './types';
 
-export async function scan(params: IScanParams): Promise<INativeResponse<Card>> {
+export async function scan(params: IScanParams): Promise<INativeResponse<IScanResponse>> {
   const { accessCode, cardId, msgBody, msgHeader, migratePublicKey } = params;
 
   const migrate = params.migrate ?? false;
 
   return withNativeResponse(async () => {
-    const { card: cardJson, publicKeysBase58 } = (await NativeModule.scan(
-      accessCode,
-      cardId,
-      msgHeader,
-      msgBody,
-      migrate,
-      migratePublicKey
-    )) as IScanResult;
+    const {
+      card: cardJson,
+      publicKeysBase58,
+      migrateStatus,
+    } = (await NativeModule.scan(accessCode, cardId, msgHeader, msgBody, migrate, migratePublicKey)) as IScanResult;
 
     const card = JSON.parse(cardJson) as Card;
 
     card.wallets.forEach((w, i) => (w.publicKeyBase58 = publicKeysBase58[i]!));
 
-    return card;
+    return { card, migrateStatus };
   });
 }
 
