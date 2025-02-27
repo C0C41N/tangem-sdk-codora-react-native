@@ -8,6 +8,7 @@ interface ISessionParams {
 // Scan Card
 
 export interface IScanParams extends ISessionParams {
+  migrate?: boolean;
   migratePublicKey?: string;
 }
 

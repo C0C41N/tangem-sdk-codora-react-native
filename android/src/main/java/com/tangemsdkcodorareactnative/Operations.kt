@@ -41,6 +41,7 @@ class Operations(private val module: TangemModule) {
     cardId: String?,
     msgHeader: String?,
     msgBody: String?,
+    migrate: Boolean,
     migratePublicKey: String?,
     promise: Promise
   ) { GlobalScope.launch(Dispatchers.Main) {
@@ -70,35 +71,46 @@ class Operations(private val module: TangemModule) {
     var card = scanResult.value!!
 
     val shouldMigrate = run {
-      if (migratePublicKey == null) return@run false
 
-      val hasSecp = card.wallets.any { it.curve == EllipticCurve.Secp256k1 && it.publicKey.toHexString() == migratePublicKey }
+      if (!migrate) return@run 0
 
-      if (!hasSecp) {
-        module.handleReject(promise, "initiated: migratePublicKey not found or isn't of secp256k1")
-        return@run false
+      if (!card.wallets.any { it.curve == EllipticCurve.Secp256k1 }) {
+        module.handleReject(promise, "initiated: card does not have any wallet of curve secp256k1")
+        return@run -1
       }
 
-      val hasEd = card.wallets.any { it.curve == EllipticCurve.Ed25519 }
-
-      if (hasEd) {
+      if (card.wallets.any { it.curve == EllipticCurve.Ed25519 }) {
         module.handleReject(promise, "initiated: card already contains a wallet of curve ed25519")
-        return@run false
+        return@run -1
       }
 
-      true
+      if (migratePublicKey != null && card.wallets.any { it.curve == EllipticCurve.Secp256k1 && it.publicKey.toHexString() == migratePublicKey }) {
+        module.handleReject(promise, "initiated: card does not contain a wallet of curve secp256k1 that matches the provided public key")
+        return@run -1
+      }
+
+      return@run 1
+
     }
 
-    if (!shouldMigrate && migratePublicKey != null) {
+    if (shouldMigrate < 0) {
       session.stop()
       return@launch
     }
 
-    if (shouldMigrate) {
+    if (shouldMigrate > 0) {
 
       // Derive entropy
 
-      val secpWallet = card.wallets.first { it.publicKey.toHexString() == migratePublicKey }
+      val secpWallet = run {
+
+        if (migratePublicKey != null)
+          return@run card.wallets.first { it.publicKey.toHexString() == migratePublicKey }
+
+        return@run card.wallets.first { it.curve == EllipticCurve.Secp256k1 }
+
+      }
+
       val secpPubKeyData = secpWallet.publicKey
 
       val path = DerivationPath("m/44'/501'/141414'/0'")

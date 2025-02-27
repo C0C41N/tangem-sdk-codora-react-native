@@ -23,12 +23,15 @@ import type {
 export async function scan(params: IScanParams): Promise<INativeResponse<Card>> {
   const { accessCode, cardId, msgBody, msgHeader, migratePublicKey } = params;
 
+  const migrate = params.migrate ?? false;
+
   return withNativeResponse(async () => {
     const { card: cardJson, publicKeysBase58 } = (await NativeModule.scan(
       accessCode,
       cardId,
       msgHeader,
       msgBody,
+      migrate,
       migratePublicKey
     )) as IScanResult;
 

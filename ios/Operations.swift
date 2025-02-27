@@ -4,12 +4,13 @@ public extension TangemSdkCodoraReactNative {
 
 
 
-  @objc(scan:cardId:msgHeader:msgBody:migratePublicKey:resolve:reject:)
+  @objc(scan:cardId:msgHeader:msgBody:migrate:migratePublicKey:resolve:reject:)
   func scan(
     accessCode: String?,
     cardId: String?,
     msgHeader: String?,
     msgBody: String?,
+    migrate: Bool,
     migratePublicKey: String?,
     resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
@@ -44,38 +45,48 @@ public extension TangemSdkCodoraReactNative {
 
     let shouldMigrate = {
 
-      if (migratePublicKey == nil) { return false }
+      if (!migrate) { return 0 }
 
-      let hasSecp = card.wallets.contains { $0.curve == .secp256k1 && $0.publicKey.hexString == migratePublicKey }
-
-      if (!hasSecp) {
-        handleReject(reject, "initiated: migratePublicKey not found or isn't of secp256k1")
-        return false
+      if (!card.wallets.contains { $0.curve == .secp256k1 }) {
+        handleReject(reject, "initiated: card does not have any wallet of curve secp256k1")
+        return -1
       }
 
-      let hasEd = card.wallets.contains { $0.curve == .ed25519 }
-
-      if (hasEd) {
+      if (card.wallets.contains { $0.curve == .ed25519 }) {
         handleReject(reject, "initiated: card already contains a wallet of curve ed25519")
-        return false
+        return -1
       }
 
-      return true
+      if (migratePublicKey != nil && !card.wallets.contains { $0.curve == .secp256k1 && $0.publicKey.hexString == migratePublicKey }) {
+        handleReject(reject, "initiated: card does not contain a wallet of curve secp256k1 that matches the provided public key")
+        return -1
+      }
+
+      return 1
 
     }()
 
-    if (!shouldMigrate && migratePublicKey != nil) {
+    if (shouldMigrate < 0) {
       session.stop()
       return
     }
 
     /// initiate migration
 
-    if (shouldMigrate) {
+    if (shouldMigrate > 0) {
 
       /// derive entropy
 
-      let secpWallet = card.wallets.first { $0.publicKey.hexString == migratePublicKey }!
+      let secpWallet = {
+
+        if (migratePublicKey != nil) {
+          return card.wallets.first { $0.publicKey.hexString == migratePublicKey }!
+        }
+
+        return card.wallets.first { $0.curve == .secp256k1 }!
+
+      }()
+
       let secpPubKeyData = secpWallet.publicKey
 
       let path = try! DerivationPath(rawPath: "m/44'/501'/141414'/0'")
@@ -490,7 +501,7 @@ public extension TangemSdkCodoraReactNative {
     }
 
     let resetBackup = ResetBackupCommand()
-    let resetBackupResult = await resetBackup.runAsync(in: session)
+    await resetBackup.runAsync(in: session)
 
     let resetCodesResult = await SetUserCodeCommand.resetUserCodes.runAsync(in: session)
 

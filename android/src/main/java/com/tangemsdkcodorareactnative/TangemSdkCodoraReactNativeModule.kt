@@ -46,9 +46,10 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
     cardId: String?,
     msgHeader: String?,
     msgBody: String?,
+    migrate: Boolean,
     migratePublicKey: String?,
     promise: Promise
-  ) { operations.scan(accessCode, cardId, msgHeader, msgBody, migratePublicKey, promise) }
+  ) { operations.scan(accessCode, cardId, msgHeader, msgBody, migrate, migratePublicKey, promise) }
 
   @ReactMethod
   fun sign(

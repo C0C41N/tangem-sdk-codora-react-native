@@ -11,6 +11,7 @@ RCT_EXTERN_METHOD(
   cardId:(NSString * _Nullable)cardId
   msgHeader:(NSString * _Nullable)msgHeader
   msgBody:(NSString * _Nullable)msgBody
+  migrate:(BOOL)migrate
   migratePublicKey:(NSString * _Nullable)migratePublicKey
   resolve:(RCTPromiseResolveBlock)resolve
   reject:(RCTPromiseRejectBlock)reject
