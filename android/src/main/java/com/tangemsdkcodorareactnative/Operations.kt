@@ -8,6 +8,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
 import com.tangem.Message
 import com.tangem.common.UserCodeType
+import com.tangem.common.card.Card
 import com.tangem.common.card.EllipticCurve
 import com.tangem.common.core.UserCodeRequestPolicy
 import com.tangem.common.extensions.calculateSha256
@@ -46,6 +47,21 @@ class Operations(private val module: TangemModule) {
     promise: Promise
   ) { GlobalScope.launch(Dispatchers.Main) {
 
+    fun resolveResponse(card: Card, migrateStatus: String) {
+
+      val resultMap = Arguments.createMap()
+      val publicKeysArray = Arguments.createArray()
+
+      card.wallets.map { it.publicKey.encodeToBase58String() }.forEach { publicKeysArray.pushString(it) }
+
+      resultMap.putString("card", card.toJson())
+      resultMap.putArray("publicKeysBase58", publicKeysArray)
+      resultMap.putString("migrateStatus", migrateStatus)
+
+      promise.resolve(resultMap)
+
+    }
+
     val startSessionResult = module.sdk.startSessionAsync(
       cardId,
       initialMessage = Message(header = msgHeader, body = msgBody),
@@ -75,17 +91,17 @@ class Operations(private val module: TangemModule) {
       if (!migrate) return@run 0
 
       if (!card.wallets.any { it.curve == EllipticCurve.Secp256k1 }) {
-        module.handleReject(promise, "initiated: card does not have any wallet of curve secp256k1")
+        resolveResponse(card, "initiated: card does not have any wallet of curve secp256k1")
         return@run -1
       }
 
       if (card.wallets.any { it.curve == EllipticCurve.Ed25519 }) {
-        module.handleReject(promise, "initiated: card already contains a wallet of curve ed25519")
+        resolveResponse(card, "initiated: card already contains a wallet of curve ed25519")
         return@run -1
       }
 
       if (migratePublicKey != null && card.wallets.any { it.curve == EllipticCurve.Secp256k1 && it.publicKey.toHexString() == migratePublicKey }) {
-        module.handleReject(promise, "initiated: card does not contain a wallet of curve secp256k1 that matches the provided public key")
+        resolveResponse(card, "initiated: card does not contain a wallet of curve secp256k1 that matches the provided public key")
         return@run -1
       }
 
@@ -119,7 +135,7 @@ class Operations(private val module: TangemModule) {
       val deriveHDWalletResult = deriveHDWallet.runAsync(session)
 
       if (!deriveHDWalletResult.success) {
-        module.handleReject(promise, "initiated: ${deriveHDWalletResult.error!!}")
+        resolveResponse(card, "initiated: ${deriveHDWalletResult.error!!}")
         session.stop()
         return@launch
       }
@@ -143,7 +159,7 @@ class Operations(private val module: TangemModule) {
       val createWalletResult = createWallet.runAsync(session)
 
       if (!createWalletResult.success) {
-        module.handleReject(promise, "keypair_created: ${createWalletResult.error!!}")
+        resolveResponse(card, "keypair_created: ${createWalletResult.error!!}")
         session.stop()
         return@launch
       }
@@ -154,17 +170,14 @@ class Operations(private val module: TangemModule) {
 
     }
 
-
-    val resultMap = Arguments.createMap()
-    val publicKeysArray = Arguments.createArray()
-
-    card.wallets.map { it.publicKey.encodeToBase58String() }.forEach { publicKeysArray.pushString(it) }
-
-    resultMap.putString("card", card.toJson())
-    resultMap.putArray("publicKeysBase58", publicKeysArray)
-
     session.stop()
-    promise.resolve(resultMap)
+
+    val migrateStatus = if (shouldMigrate > 0)
+      "keypair_created: successfully migrated"
+    else
+      "migration not requested"
+
+    resolveResponse(card, migrateStatus)
 
   } }
 
