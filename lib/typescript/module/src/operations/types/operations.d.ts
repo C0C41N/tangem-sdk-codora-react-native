@@ -9,14 +9,21 @@ export interface IScanParams extends ISessionParams {
     migrate?: boolean;
     migratePublicKey?: string;
 }
-export interface IScanResult {
+export interface IMigrateStatus {
+    status: string;
+    success: boolean;
+    error: string | null;
+    pubKeyBase58: string | null;
+    pubKeyHex: string | null;
+}
+export interface IScanRawResult {
     card: string;
     publicKeysBase58: string[];
-    migrateStatus: string;
+    migrateStatus: IMigrateStatus;
 }
 export interface IScanResponse {
     card: Card;
-    migrateStatus: string;
+    migrateStatus: IMigrateStatus;
 }
 export interface ISignParams extends ISessionParams {
     unsignedHex: string;

@@ -13,7 +13,7 @@ import type {
   IResetCodesParams,
   IScanParams,
   IScanResponse,
-  IScanResult,
+  IScanRawResult,
   ISetAccessCodeParams,
   ISignMulParams,
   ISignMulResult,
@@ -31,7 +31,7 @@ export async function scan(params: IScanParams): Promise<INativeResponse<IScanRe
       card: cardJson,
       publicKeysBase58,
       migrateStatus,
-    } = (await NativeModule.scan(accessCode, cardId, msgHeader, msgBody, migrate, migratePublicKey)) as IScanResult;
+    } = (await NativeModule.scan(accessCode, cardId, msgHeader, msgBody, migrate, migratePublicKey)) as IScanRawResult;
 
     const card = JSON.parse(cardJson) as Card;
 

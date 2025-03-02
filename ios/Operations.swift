@@ -1,5 +1,39 @@
 import TangemSdk_Codora
 
+
+
+struct MigrateStatus {
+  let status: String
+  let success: Bool
+  let error: String?
+  let pubKeyBase58: String?
+  let pubKeyHex: String?
+}
+
+extension MigrateStatus {
+
+  static func success(status: String, pubKeyBase58: String, pubKeyHex: String) -> MigrateStatus {
+    return MigrateStatus(status: status, success: true, error: nil, pubKeyBase58: pubKeyBase58, pubKeyHex: pubKeyHex)
+  }
+
+  static func error(status: String, error: String) -> MigrateStatus {
+    return MigrateStatus(status: status, success: false, error: error, pubKeyBase58: nil, pubKeyHex: nil)
+  }
+
+  func toDictionary() -> [String: Any] {
+    return [
+      "status": status,
+      "success": success,
+      "error": error ?? NSNull(),
+      "pubKeyBase58": pubKeyBase58 ?? NSNull(),
+      "pubKeyHex": pubKeyHex ?? NSNull()
+    ]
+  }
+
+}
+
+
+
 public extension TangemSdkCodoraReactNative {
 
 
@@ -16,11 +50,13 @@ public extension TangemSdkCodoraReactNative {
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
 
-    func resolveResponse(card: Card, migrateStatus: String) {
+    /// utility functions
+
+    func resolveResponse(card: Card, migrateStatus: MigrateStatus?) {
       resolve([
         "card": card.json,
         "publicKeysBase58": card.wallets.map { $0.publicKey.base58EncodedString },
-        "migrateStatus": migrateStatus
+        "migrateStatus": migrateStatus?.toDictionary() ?? NSNull()
       ])
     }
 
@@ -49,50 +85,40 @@ public extension TangemSdkCodoraReactNative {
       return
     }
 
-    /// check if migration is necessary
+    /// migration
 
-    let shouldMigrate = {
+    let migrateStatus: MigrateStatus? = await {
 
-      if (!migrate) { return 0 }
+      if (!migrate) { return nil }
 
       if (!card.wallets.contains { $0.curve == .secp256k1 }) {
-        resolveResponse(card: card, migrateStatus: "initiated: card does not have any wallet of curve secp256k1")
-        return -1
+        return .error(
+          status: "initiated",
+          error: "card does not have any wallet of curve secp256k1"
+        )
       }
 
       if (card.wallets.contains { $0.curve == .ed25519 }) {
-        resolveResponse(card: card, migrateStatus: "initiated: card already contains a wallet of curve ed25519")
-        return -1
+        return .error(
+          status: "initiated",
+          error: "card already contains a wallet of curve ed25519"
+        )
       }
 
       if (migratePublicKey != nil && !card.wallets.contains { $0.curve == .secp256k1 && $0.publicKey.hexString == migratePublicKey }) {
-        resolveResponse(card: card, migrateStatus: "initiated: card does not contain a wallet of curve secp256k1 that matches the provided public key")
-        return -1
+        return .error(
+          status: "initiated",
+          error: "card does not contain a wallet of curve secp256k1 that matches the provided public key"
+        )
       }
-
-      return 1
-
-    }()
-
-    if (shouldMigrate < 0) {
-      session.stop()
-      return
-    }
-
-    /// initiate migration
-
-    if (shouldMigrate > 0) {
 
       /// derive entropy
 
       let secpWallet = {
-
         if (migratePublicKey != nil) {
           return card.wallets.first { $0.publicKey.hexString == migratePublicKey }!
         }
-
         return card.wallets.first { $0.curve == .secp256k1 }!
-
       }()
 
       let secpPubKeyData = secpWallet.publicKey
@@ -103,9 +129,10 @@ public extension TangemSdkCodoraReactNative {
       let deriveHDWalletResult = await deriveHDWallet.runAsync(in: session)
 
       guard deriveHDWalletResult.success else {
-        resolveResponse(card: card, migrateStatus: "initiated: \(deriveHDWalletResult.error!)")
-        session.stop()
-        return
+        return .error(
+          status: "initiated",
+          error: "\(deriveHDWalletResult.error!)"
+        )
       }
 
       let HDWallet = deriveHDWalletResult.value!
@@ -119,30 +146,35 @@ public extension TangemSdkCodoraReactNative {
       let mnemonicComponents = try! bip39.generateMnemonic(from: entropy, wordlist: .en)
       let mnemonicString = bip39.convertToMnemonicString(mnemonicComponents)
 
-      let mnemonic = try Mnemonic(with: mnemonicString)
+      let mnemonic = try! Mnemonic(with: mnemonicString)
       let factory = AnyMasterKeyFactory(mnemonic: mnemonic, passphrase: "")
-      let privateKey = try factory.makeMasterKey(for: .ed25519)
+      let privateKey = try! factory.makeMasterKey(for: .ed25519)
 
       let createWallet = CreateWalletTask(curve: .ed25519, privateKey: privateKey)
       let createWalletResult = await createWallet.runAsync(in: session)
 
       guard createWalletResult.success else {
-        resolveResponse(card: card, migrateStatus: "keypair_created: \(createWalletResult.error!)")
-        session.stop()
-        return
+        return .error(
+          status: "keypair_created",
+          error: "\(createWalletResult.error!)"
+        )
       }
 
       /// include newly created wallet in scan result
 
-      card.wallets.append(createWalletResult.value!.wallet)
+      let migratedWallet = createWalletResult.value!.wallet
 
-    }
+      card.wallets.append(migratedWallet)
+
+      return .success(
+        status: "keypair_created",
+        pubKeyBase58: migratedWallet.publicKey.base58EncodedString,
+        pubKeyHex: migratedWallet.publicKey.hexString
+      )
+
+    }()
 
     session.stop()
-
-    let migrateStatus = shouldMigrate > 0
-      ? "keypair_created: successfully migrated"
-      : "migration not requested"
 
     resolveResponse(card: card, migrateStatus: migrateStatus)
 
@@ -510,7 +542,7 @@ public extension TangemSdkCodoraReactNative {
     }
 
     let resetBackup = ResetBackupCommand()
-    await resetBackup.runAsync(in: session)
+    _ = await resetBackup.runAsync(in: session)
 
     let resetCodesResult = await SetUserCodeCommand.resetUserCodes.runAsync(in: session)
 

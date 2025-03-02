@@ -6,6 +6,7 @@ package com.tangemsdkcodorareactnative
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.WritableMap
 import com.tangem.Message
 import com.tangem.common.UserCodeType
 import com.tangem.common.card.Card
@@ -35,6 +36,37 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+
+
+data class MigrateStatus(
+  val status: String,
+  val success: Boolean,
+  val error: String? = null,
+  val pubKeyBase58: String? = null,
+  val pubKeyHex: String? = null
+) {
+
+  fun toWritableMap(): WritableMap {
+    return Arguments.createMap().apply {
+      putString("status", status)
+      putBoolean("success", success)
+      error?.let { putString("error", it) } ?: putNull("error")
+      pubKeyBase58?.let { putString("pubKeyBase58", it) } ?: putNull("pubKeyBase58")
+      pubKeyHex?.let { putString("pubKeyHex", it) } ?: putNull("pubKeyHex")
+    }
+  }
+
+  companion object {
+    fun success(status: String, pubKeyBase58: String, pubKeyHex: String) =
+      MigrateStatus(status, true, pubKeyBase58 = pubKeyBase58, pubKeyHex = pubKeyHex)
+    fun error(status: String, error: String) =
+      MigrateStatus(status, false, error = error)
+  }
+
+}
+
+
+
 class Operations(private val module: TangemModule) {
 
   fun scan(
@@ -47,7 +79,9 @@ class Operations(private val module: TangemModule) {
     promise: Promise
   ) { GlobalScope.launch(Dispatchers.Main) {
 
-    fun resolveResponse(card: Card, migrateStatus: String) {
+    /// utility functions
+
+    fun resolveResponse(card: Card, migrateStatus: MigrateStatus?) {
 
       val resultMap = Arguments.createMap()
       val publicKeysArray = Arguments.createArray()
@@ -56,11 +90,13 @@ class Operations(private val module: TangemModule) {
 
       resultMap.putString("card", card.toJson())
       resultMap.putArray("publicKeysBase58", publicKeysArray)
-      resultMap.putString("migrateStatus", migrateStatus)
+      migrateStatus?.toWritableMap()?.let { resultMap.putMap("migrateStatus", it) } ?: resultMap.putNull("migrateStatus")
 
       promise.resolve(resultMap)
 
     }
+
+    /// start session
 
     val startSessionResult = module.sdk.startSessionAsync(
       cardId,
@@ -75,6 +111,8 @@ class Operations(private val module: TangemModule) {
 
     val session = startSessionResult.value!!
 
+    /// initiate scan task
+
     val scanTask = ScanTask()
     val scanResult = scanTask.runAsync(session)
 
@@ -86,45 +124,40 @@ class Operations(private val module: TangemModule) {
 
     var card = scanResult.value!!
 
-    val shouldMigrate = run {
+    /// migration
 
-      if (!migrate) return@run 0
+    val migrateStatus: MigrateStatus? = run {
+
+      if (!migrate) return@run null
 
       if (!card.wallets.any { it.curve == EllipticCurve.Secp256k1 }) {
-        resolveResponse(card, "initiated: card does not have any wallet of curve secp256k1")
-        return@run -1
+        return@run MigrateStatus.error(
+          "initiated",
+          "card does not have any wallet of curve secp256k1"
+        )
       }
 
       if (card.wallets.any { it.curve == EllipticCurve.Ed25519 }) {
-        resolveResponse(card, "initiated: card already contains a wallet of curve ed25519")
-        return@run -1
+        return@run MigrateStatus.error(
+          "initiated",
+          "card already contains a wallet of curve ed25519"
+        )
       }
 
       if (migratePublicKey != null && card.wallets.any { it.curve == EllipticCurve.Secp256k1 && it.publicKey.toHexString() == migratePublicKey }) {
-        resolveResponse(card, "initiated: card does not contain a wallet of curve secp256k1 that matches the provided public key")
-        return@run -1
+        return@run MigrateStatus.error(
+          "initiated",
+          "card does not contain a wallet of curve secp256k1 that matches the provided public key"
+        )
       }
 
-      return@run 1
+      /// Derive entropy
 
-    }
-
-    if (shouldMigrate < 0) {
-      session.stop()
-      return@launch
-    }
-
-    if (shouldMigrate > 0) {
-
-      // Derive entropy
-
+      @Suppress("LABEL_NAME_CLASH")
       val secpWallet = run {
-
         if (migratePublicKey != null)
           return@run card.wallets.first { it.publicKey.toHexString() == migratePublicKey }
-
         return@run card.wallets.first { it.curve == EllipticCurve.Secp256k1 }
-
       }
 
       val secpPubKeyData = secpWallet.publicKey
@@ -135,16 +168,17 @@ class Operations(private val module: TangemModule) {
       val deriveHDWalletResult = deriveHDWallet.runAsync(session)
 
       if (!deriveHDWalletResult.success) {
-        resolveResponse(card, "initiated: ${deriveHDWalletResult.error!!}")
-        session.stop()
-        return@launch
+        return@run MigrateStatus.error(
+          "initiated",
+          "${deriveHDWalletResult.error!!}"
+        )
       }
 
       val hdWallet = deriveHDWalletResult.value!!
       val sourceOfEntropy = hdWallet.publicKey + hdWallet.chainCode
       val entropy = sourceOfEntropy.calculateSha256()
 
-      // Import new wallet
+      /// Import new wallet
 
       val bip39 = TangemSdkProvider.getBip39()
 
@@ -159,23 +193,27 @@ class Operations(private val module: TangemModule) {
       val createWalletResult = createWallet.runAsync(session)
 
       if (!createWalletResult.success) {
-        resolveResponse(card, "keypair_created: ${createWalletResult.error!!}")
-        session.stop()
-        return@launch
+        return@run MigrateStatus.error(
+          "keypair_created",
+          "${createWalletResult.error!!}"
+        )
       }
 
-      // Include newly created wallet in scan result
+      /// Include newly created wallet in scan result
 
-      card = card.copy(wallets = card.wallets.plus(createWalletResult.value!!.wallet))
+      val migratedWallet = createWalletResult.value!!.wallet
+
+      card = card.copy(wallets = card.wallets.plus(migratedWallet))
+
+      return@run MigrateStatus.success(
+        "keypair_created",
+        migratedWallet.publicKey.encodeToBase58String(),
+        migratedWallet.publicKey.toHexString()
+      )
 
     }
 
     session.stop()
-
-    val migrateStatus = if (shouldMigrate > 0)
-      "keypair_created: successfully migrated"
-    else
-      "migration not requested"
 
     resolveResponse(card, migrateStatus)
 
