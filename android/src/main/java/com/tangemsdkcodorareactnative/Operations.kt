@@ -580,15 +580,22 @@ class Operations(private val module: TangemModule) {
       }
     }
 
-    ResetBackupCommand().runAsync(session)
+    var didResetBackup = false
 
-    val resetCodes = SetUserCodeCommand.resetUserCodes()
-    val resetCodesResult = resetCodes.runAsync(session)
+    if (card.backupStatus != Card.BackupStatus.NoBackup) {
+      ResetBackupCommand().runAsync(session)
+      didResetBackup = true
+    }
 
-    if (!resetCodesResult.success || resetCodesResult.value == null) {
-      module.handleReject(promise, resetCodesResult.error!!)
-      session.stop()
-      return@launch
+    if (!didResetBackup) {
+      val resetCodes = SetUserCodeCommand.resetUserCodes()
+      val resetCodesResult = resetCodes.runAsync(session)
+
+      if (!resetCodesResult.success || resetCodesResult.value == null) {
+        module.handleReject(promise, resetCodesResult.error!!)
+        session.stop()
+        return@launch
+      }
     }
 
     session.stop()
