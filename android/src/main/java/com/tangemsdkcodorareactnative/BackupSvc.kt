@@ -65,6 +65,8 @@ class BackupSvc(private val module: TangemModule) {
 
   fun backupSvcReadPrimaryCard(promise: Promise) { GlobalScope.launch(Dispatchers.Main) {
 
+    getBackupSvc().discardSavedBackup()
+
     val readPrimaryCardResult = getBackupSvc().readPrimaryCardAsync(null)
 
     if (!readPrimaryCardResult.success) {

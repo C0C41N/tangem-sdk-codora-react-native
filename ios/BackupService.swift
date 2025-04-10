@@ -54,6 +54,8 @@ public extension TangemSdkCodoraReactNative {
     reject: @escaping RCTPromiseRejectBlock
   ) { Task {
 
+    backupSvc.discardIncompletedBackup()
+
     let readPrimaryCardResult = await backupSvc.readPrimaryCardAsync()
 
     guard readPrimaryCardResult.success else {

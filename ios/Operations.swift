@@ -568,7 +568,7 @@ public extension TangemSdkCodoraReactNative {
 
     let decisionMap: [Bool: AccessCodeRequestPolicy] = [
       true: .alwaysWithBiometrics,
-      false: .always
+      false: .default
     ]
 
     sdk.config.accessCodeRequestPolicy = decisionMap[enable]!

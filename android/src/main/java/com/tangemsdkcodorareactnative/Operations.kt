@@ -603,7 +603,7 @@ class Operations(private val module: TangemModule) {
 
     val decisionMap: Map<Boolean, UserCodeRequestPolicy> = mapOf(
       true to UserCodeRequestPolicy.AlwaysWithBiometrics(UserCodeType.AccessCode),
-      false to UserCodeRequestPolicy.Always(UserCodeType.AccessCode)
+      false to UserCodeRequestPolicy.Default
     )
 
     module.sdk.config.userCodeRequestPolicy = decisionMap[enable]!!
