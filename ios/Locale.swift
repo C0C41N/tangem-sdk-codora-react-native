@@ -34,4 +34,9 @@ public extension TangemSdkCodoraReactNative {
 
 
 
+  @objc(forceExitApp)
+  func forceExitApp() { exit(0) }
+
+
+
 }

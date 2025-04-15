@@ -13,3 +13,8 @@ const languageCodeMap: Record<LanguageCodes, string> = {
 export async function setAppLanguage(languageCode: LanguageCodes): Promise<ISetAppLangResponse> {
   return withNativeResponse(() => NativeModule.setAppLanguage(languageCodeMap[languageCode]));
 }
+
+export function forceExitApp(): void {
+  if (Platform.OS !== 'ios') return;
+  NativeModule.forceExitApp();
+}
