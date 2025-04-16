@@ -15,7 +15,7 @@ class Locale (private val module: TangemModule) {
 
     println("languageCode_1 $languageCode")
 
-    val locale = Locale("zh", "TW")
+    val locale = Locale("zh", "CN")
     Locale.setDefault(locale)
     val config = Configuration(context.resources.configuration)
     config.setLocale(locale)
