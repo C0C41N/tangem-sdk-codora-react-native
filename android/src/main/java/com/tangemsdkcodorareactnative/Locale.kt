@@ -1,5 +1,4 @@
 package com.tangemsdkcodorareactnative
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatDelegate
@@ -10,7 +9,6 @@ import java.util.Locale
 class Locale (private val module: TangemModule) {
 
   fun setAppLanguage(
-    context: Context,
     languageCode: String,
     promise: Promise
   ) {
@@ -19,7 +17,6 @@ class Locale (private val module: TangemModule) {
 
     mainHandler.post { try {
 
-      println("languageCode $languageCode")
       AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(Locale.forLanguageTag(languageCode)))
       promise.resolve(true)
 

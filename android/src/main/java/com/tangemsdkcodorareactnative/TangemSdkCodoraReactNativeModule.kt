@@ -193,6 +193,6 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
   fun setAppLanguage(
     languageCode: String,
     promise: Promise
-  ) { locale.setAppLanguage(reactApplicationContext, languageCode, promise) }
+  ) { locale.setAppLanguage(languageCode, promise) }
 
 }
