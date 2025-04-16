@@ -1,1 +1,1 @@
-{"version":3,"names":["LanguageCodes","exports"],"sourceRoot":"../../../src","sources":["locale/types.ts"],"mappings":";;;;;;IAEYA,aAAa,GAAAC,OAAA,CAAAD,aAAA,0BAAbA,aAAa;EAAbA,aAAa;EAAbA,aAAa;EAAbA,aAAa;EAAbA,aAAa;EAAA,OAAbA,aAAa;AAAA","ignoreList":[]}
+{"version":3,"names":["LanguageCodes","exports"],"sourceRoot":"../../../src","sources":["locale/types.ts"],"mappings":";;;;;;IAEYA,aAAa,GAAAC,OAAA,CAAAD,aAAA,0BAAbA,aAAa;EAAbA,aAAa;EAAbA,aAAa;EAAA,OAAbA,aAAa;AAAA","ignoreList":[]}
