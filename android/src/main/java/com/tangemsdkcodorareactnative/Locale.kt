@@ -19,14 +19,8 @@ class Locale (private val module: TangemModule) {
 
     mainHandler.post { try {
 
+      println("languageCode $languageCode")
       AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(Locale.forLanguageTag(languageCode)))
-
-      val currentLocale: Locale = context.resources.configuration.locales.get(0) ///
-      println("Current locale: ${currentLocale.language}-${currentLocale.country}") ///
-
-      val localizedString = context.getString(com.tangem.sdk.R.string.view_delegate_scan) ///
-      println("Sample locale string: $localizedString") ///
-
       promise.resolve(true)
 
     } catch (err: Error) {
