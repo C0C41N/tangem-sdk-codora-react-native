@@ -13,6 +13,8 @@ class Locale (private val module: TangemModule) {
     promise: Promise
   ) { try {
 
+    println("languageCode $languageCode")
+
     val locale = Locale(languageCode)
     Locale.setDefault(locale)
     val config = Configuration(context.resources.configuration)
