@@ -2,13 +2,14 @@ package com.tangemsdkcodorareactnative
 import android.content.Context
 import android.content.res.Configuration
 import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReactApplicationContext
 import java.util.Locale
 
 @Suppress("DEPRECATION")
 class Locale (private val module: TangemModule) {
 
   fun setAppLanguage(
-    context: Context,
+    context: ReactApplicationContext,
     languageCode: String,
     promise: Promise
   ) { try {
@@ -28,6 +29,8 @@ class Locale (private val module: TangemModule) {
 
     val localizedString = context.getString(com.tangem.sdk.R.string.view_delegate_scan) ///
     println("Sample locale string: $localizedString") ///
+
+    context.currentActivity?.recreate()
 
     promise.resolve(true)
 
