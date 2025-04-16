@@ -30,7 +30,8 @@ class Locale (private val module: TangemModule) {
     val localizedString = context.getString(com.tangem.sdk.R.string.view_delegate_scan) ///
     println("Sample locale string: $localizedString") ///
 
-    context.currentActivity?.recreate()
+    val activity = context.currentActivity
+    activity?.runOnUiThread { activity.recreate() }
 
     promise.resolve(true)
 
