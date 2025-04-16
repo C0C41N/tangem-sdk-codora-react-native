@@ -4,23 +4,28 @@ import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import com.facebook.react.bridge.Promise
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
-@Suppress("DEPRECATION")
 class Locale (private val module: TangemModule) {
 
+  @OptIn(DelicateCoroutinesApi::class)
   fun setAppLanguage(
     context: Context,
     languageCode: String,
     promise: Promise
-  ) { try {
+  ) { GlobalScope.launch(Dispatchers.Main) { try {
 
     AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(Locale.forLanguageTag(languageCode)))
 
 //    val (language, country) = languageCode.split("-")
-
+//
 //    println("languageCode_1 $languageCode") ///
-
+//
 //    val locale = Locale(language, country)
 //    Locale.setDefault(locale)
 //    val config = Configuration(context.resources.configuration)
@@ -39,6 +44,6 @@ class Locale (private val module: TangemModule) {
 
     module.handleReject(promise, err.toString())
 
-  } }
+  } } }
 
 }
