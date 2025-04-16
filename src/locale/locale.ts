@@ -5,7 +5,7 @@ import { Platform } from 'react-native';
 
 const languageCodeMap: Record<LanguageCodes, string> = {
   [LanguageCodes.Chinese]: Platform.select({ ios: 'zh-Hans', android: 'zh-CN' })!,
-  [LanguageCodes.English]: Platform.select({ ios: 'en', android: 'en-US' })!,
+  [LanguageCodes.English]: Platform.select({ ios: 'en', android: 'en' })!,
 };
 
 export async function setAppLanguage(languageCode: LanguageCodes): Promise<ISetAppLangResponse> {
