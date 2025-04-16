@@ -4,7 +4,7 @@ import android.content.res.Configuration
 import com.facebook.react.bridge.Promise
 import java.util.Locale
 
-@Suppress("DEPRECATION")
+//@Suppress("DEPRECATION")
 class Locale (private val module: TangemModule) {
 
   fun setAppLanguage(
@@ -19,7 +19,8 @@ class Locale (private val module: TangemModule) {
     Locale.setDefault(locale)
     val config = Configuration(context.resources.configuration)
     config.setLocale(locale)
-    context.resources.updateConfiguration(config, context.resources.displayMetrics)
+//    context.resources.updateConfiguration(config, context.resources.displayMetrics)
+    context.createConfigurationContext(config)
 
     val currentLocale: Locale = context.resources.configuration.locales.get(0)
     println("Current locale: ${currentLocale.language}-${currentLocale.country}")
