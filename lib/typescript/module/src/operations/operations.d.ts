@@ -11,4 +11,6 @@ export declare function resetCodes(params: IResetCodesParams): Promise<INativeRe
 export declare function resetCard(params: IResetCardParams): Promise<INativeResponse<void>>;
 export declare function enableBiometrics(enable: boolean): Promise<INativeResponse<void>>;
 export declare function enableUserCodeRecovery(params: IEnableUserCodeRecoveryParams): Promise<INativeResponse<void>>;
+export declare function forceEnableReaderMode(): Promise<INativeResponse<boolean>>;
+export declare function forceDisableReaderMode(): Promise<INativeResponse<boolean>>;
 //# sourceMappingURL=operations.d.ts.map
