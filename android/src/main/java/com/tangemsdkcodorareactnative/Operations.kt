@@ -655,4 +655,22 @@ class Operations(private val module: TangemModule) {
 
   } }
 
+  fun forceEnableReaderMode(
+    promise: Promise
+  ) { GlobalScope.launch(Dispatchers.Main) {
+
+    module.sdk.forceEnableReaderMode()
+    promise.resolve(true)
+
+  } }
+
+  fun forceDisableReaderMode(
+    promise: Promise
+  ) { GlobalScope.launch(Dispatchers.Main) {
+
+    module.sdk.forceDisableReaderMode()
+    promise.resolve(true)
+
+  } }
+
 }

@@ -20,6 +20,7 @@ import type {
   ISignParams,
   PurgeAllWalletsResult,
 } from './types';
+import { Platform } from 'react-native';
 
 export async function scan(params: IScanParams): Promise<INativeResponse<IScanResponse>> {
   const { accessCode, cardId, msgBody, msgHeader, migratePublicKey } = params;
@@ -126,4 +127,24 @@ export function enableBiometrics(enable: boolean): Promise<INativeResponse<void>
 export function enableUserCodeRecovery(params: IEnableUserCodeRecoveryParams): Promise<INativeResponse<void>> {
   const { enable, accessCode, cardId, msgBody, msgHeader } = params;
   return withNativeResponse(() => NativeModule.enableUserCodeRecovery(enable, accessCode, cardId, msgHeader, msgBody));
+}
+
+export function forceEnableReaderMode(): Promise<INativeResponse<boolean>> {
+  if (Platform.OS !== 'android')
+    return withNativeResponse(() => {
+      console.log('forceEnableReaderMode() is only for android devices.');
+      return Promise.resolve(false);
+    });
+
+  return withNativeResponse(() => NativeModule.forceEnableReaderMode());
+}
+
+export function forceDisableReaderMode(): Promise<INativeResponse<boolean>> {
+  if (Platform.OS !== 'android')
+    return withNativeResponse(() => {
+      console.log('forceDisableReaderMode() is only for android devices.');
+      return Promise.resolve(false);
+    });
+
+  return withNativeResponse(() => NativeModule.forceDisableReaderMode());
 }

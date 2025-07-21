@@ -145,6 +145,18 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
     promise: Promise
   ) { operations.enableUserCodeRecovery(enable, accessCode, cardId, msgHeader, msgBody, promise) }
 
+  // Force Reader Mode
+
+  @ReactMethod
+  fun forceEnableReaderMode(
+    promise: Promise
+  ) { operations.forceEnableReaderMode(promise) }
+
+  @ReactMethod
+  fun forceDisableReaderMode(
+    promise: Promise
+  ) { operations.forceDisableReaderMode(promise) }
+
   // Backup Service
 
   @ReactMethod
