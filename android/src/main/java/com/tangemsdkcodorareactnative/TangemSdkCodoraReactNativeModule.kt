@@ -1,5 +1,6 @@
 package com.tangemsdkcodorareactnative
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -10,6 +11,7 @@ import com.tangem.TangemSdk
 import com.tangem.sdk.codora.TangemSdkProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): ReactContextBaseJavaModule(reactContext), TangemModule {
@@ -28,14 +30,40 @@ class TangemSdkCodoraReactNativeModule(reactContext: ReactApplicationContext): R
 
   override fun initialize() {
     super.initialize()
-    CoroutineScope(Dispatchers.IO).launch {
-      TangemSdkProvider.init(currentActivity as AppCompatActivity)
-      sdk = TangemSdkProvider.getSdk()
-      operations = Operations(this@TangemSdkCodoraReactNativeModule)
-      backupSvc = BackupSvc(this@TangemSdkCodoraReactNativeModule)
-      locale = Locale(this@TangemSdkCodoraReactNativeModule)
-      bip39 = BIP39()
+    CoroutineScope(Dispatchers.Main).launch {
+      val success = tryInitializeTangemSdk()
+      if (success) {
+        Log.i("TangemInit", "Tangem SDK and dependencies initialized successfully.")
+      } else {
+        Log.e("TangemInit", "Tangem SDK initialization failed after retries.")
+      }
     }
+  }
+
+  private suspend fun tryInitializeTangemSdk(
+    maxRetries: Int = 5,
+    delayMillis: Long = 300
+  ): Boolean {
+    repeat(maxRetries) { attempt ->
+      val activity = currentActivity
+      if (activity is AppCompatActivity) {
+        try {
+          TangemSdkProvider.init(activity)
+          sdk = TangemSdkProvider.getSdk()
+          operations = Operations(this@TangemSdkCodoraReactNativeModule)
+          backupSvc = BackupSvc(this@TangemSdkCodoraReactNativeModule)
+          locale = Locale(this@TangemSdkCodoraReactNativeModule)
+          bip39 = BIP39()
+          return true
+        } catch (e: Exception) {
+          Log.e("TangemInit", "Attempt ${attempt + 1}: SDK init failed - ${e.message}", e)
+        }
+      } else {
+        Log.w("TangemInit", "Attempt ${attempt + 1}: currentActivity is null.")
+      }
+      delay(delayMillis)
+    }
+    return false
   }
 
   // Operations
