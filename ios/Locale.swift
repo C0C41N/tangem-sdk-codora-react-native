@@ -5,7 +5,7 @@
 //  Created by Ali M. on 24/11/2024.
 //
 
-import TangemSdk_Codora
+import TangemSdkCodora
 
 public extension TangemSdkCodoraReactNative {
 

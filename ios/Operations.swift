@@ -1,4 +1,4 @@
-import TangemSdk_Codora
+import TangemSdkCodora
 
 
 

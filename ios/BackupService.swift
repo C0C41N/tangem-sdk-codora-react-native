@@ -1,4 +1,4 @@
-import TangemSdk_Codora
+import TangemSdkCodora
 
 public extension TangemSdkCodoraReactNative {
 
@@ -22,7 +22,7 @@ public extension TangemSdkCodoraReactNative {
     return [
       "accessCodeIsSet": backupSvc.accessCodeIsSet,
       "addedBackupCardsCount": backupSvc.addedBackupCardsCount,
-      "backupCardIds": backupSvc.backupCardIds,
+      "backupCardIds": backupSvc.backupCards.map {$0.cardId},
       "canAddBackupCards": backupSvc.canAddBackupCards,
       "canProceed": backupSvc.canProceed,
       "currentState": getState(),

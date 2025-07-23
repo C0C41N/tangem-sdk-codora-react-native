@@ -1510,9 +1510,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - TangemSdk_Codora (= 5.16.7)
+    - TangemSdkCodora (= 3.11.0)
     - Yoga
-  - TangemSdk_Codora (5.16.7)
+  - TangemSdkCodora (3.11.0)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1587,7 +1587,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - SocketRocket
-    - TangemSdk_Codora
+    - TangemSdkCodora
 
 EXTERNAL SOURCES:
   boost:
@@ -1786,8 +1786,8 @@ SPEC CHECKSUMS:
   ReactTestApp-DevSupport: 1e39530b4a8602e7138a5b9dfafe41d3a78382ff
   ReactTestApp-Resources: ef64fb77d09031eba0ada7240f39d4579fa02361
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  tangem-sdk-codora-react-native: be1cbb10cb0f019bc64c6e73d5e7394a24250de7
-  TangemSdk_Codora: 64b1dd8126d96d3f0a009b6c9cceab5855802e99
+  tangem-sdk-codora-react-native: 251ae81c51f06e36dd6195e3718ba9eda70b97a5
+  TangemSdkCodora: fd4f8a7fb49df39f0f9705e030b7f8be6b7340cc
   Yoga: f8ec45ce98bba1bc93dd28f2ee37215180e6d2b6
 
 PODFILE CHECKSUM: 5140810887fe61b5c65dc086db0544fe559640e1
